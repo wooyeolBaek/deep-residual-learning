@@ -32,7 +32,7 @@ class PlainBlock(nn.Module):
                 in_channels=in_channels,
                 out_channels=out_channels,
                 kernel_size=3,
-                stride=1 if in_channels==out_channels else 2,
+                stride=1 if in_channels==out_channels else 2, # 2 for downsampling
                 padding=1,
                 bias=bias,
             ),
@@ -128,6 +128,40 @@ class ResBlock(PlainBlock):
         return x
 
 
+class BottleneckBlock(ResBlock):
+    def __init__(self, in_channels, out_channels, bias=True, mapping='identity') -> torch.FloatTensor:
+        super().__init__(in_channels, out_channels, bias, mapping)
+
+        self.h = nn.Sequential(
+            ConvLayer(
+                in_channels=in_channels,
+                out_channels=out_channels,
+                kernel_size=1,
+                stride=1,
+                padding=0,
+                bias=bias,
+            ),
+            nn.ReLU(),
+            ConvLayer(
+                in_channels=out_channels,
+                out_channels=out_channels,
+                kernel_size=3,
+                stride=1 if in_channels==out_channels else 2, # 2 for downsampling
+                padding=1,
+                bias=bias,
+            ),
+            nn.ReLU(),
+            ConvLayer(
+                in_channels=out_channels,
+                out_channels=out_channels,
+                kernel_size=1,
+                stride=1,
+                padding=0,
+                bias=bias,
+            ),
+        )
+
+
 if __name__=="__main__":
 
     batch_size = 16
@@ -148,6 +182,7 @@ if __name__=="__main__":
     print(f'conv_out64 Output, shape: {tuple(conv_out64.shape)} == (16,64,32,32)')
     print(f'conv_out128 Output, shape: {tuple(conv_out128.shape)} == (16,128,32,32)')
 
+    
     # PlainBlock Test
     print('PlainBlock Test')
     # the same dimension
@@ -158,8 +193,9 @@ if __name__=="__main__":
     print(f'plain_out64 Output, shape: {tuple(plain_out64.shape)} == (16,64,32,32)')
     print(f'plain_out128 Output, shape: {tuple(plain_out128.shape)} == (16,128,16,16)')
     
+
     # ResBlock Test
-    print('PlainBlock Test')
+    print('ResBlock Test')
     # the same dimension identity
     res_out64_iden = ResBlock(in_channels=in_channels, out_channels=in_channels, bias=True, mapping='identity')(x)
     # dimension expansion identity
@@ -173,4 +209,21 @@ if __name__=="__main__":
     print(f'res_out128_identity Output, shape: {tuple(res_out128_iden.shape)} == (16,128,16,16)')
     print(f'res_out64_projection Output, shape: {tuple(res_out64_proj.shape)} == (16,64,32,32)')
     print(f'res_out128_projection Output, shape: {tuple(res_out128_proj.shape)} == (16,128,16,16)')
+
+
+    # BottleneckBlock Test
+    print('BottleneckBlock Test')
+    # the same dimension identity
+    bottleneck_out64_iden = BottleneckBlock(in_channels=in_channels, out_channels=in_channels, bias=True, mapping='identity')(x)
+    # dimension expansion identity
+    bottleneck_out128_iden = BottleneckBlock(in_channels=in_channels, out_channels=out_channels, bias=True, mapping='identity')(x)
+    # the same dimension projection
+    bottleneck_out64_proj = BottleneckBlock(in_channels=in_channels, out_channels=in_channels, bias=True, mapping='projection')(x)
+    # dimension expansion projection
+    bottleneck_out128_proj = BottleneckBlock(in_channels=in_channels, out_channels=out_channels, bias=True, mapping='projection')(x)
+
+    print(f'bottleneck_out64_identity Output, shape: {tuple(bottleneck_out64_iden.shape)} == (16,64,32,32)')
+    print(f'bottleneck_out128_identity Output, shape: {tuple(bottleneck_out128_iden.shape)} == (16,128,16,16)')
+    print(f'bottleneck_out64_projection Output, shape: {tuple(bottleneck_out64_proj.shape)} == (16,64,32,32)')
+    print(f'bottleneck_out128_projection Output, shape: {tuple(bottleneck_out128_proj.shape)} == (16,128,16,16)')
 
