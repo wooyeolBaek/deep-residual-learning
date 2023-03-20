@@ -22,27 +22,27 @@ class PlainNet(nn.Module):
             padding=1,
         )
 
-        # conv2_x
+        # conv2_x: 112,112, -> 56,56
         self.conv2_x = [nn.MaxPool2d(kernel_size=3,stride=2,padding=1)]
         self.conv2_x += [PlainBlock(in_channels=nker,out_channels=nker) for _ in range(nblocks[0])]            
         self.conv2_x = nn.Sequential(*self.conv2_x)
 
-        # conv3_x
+        # conv3_x: 56,56, -> 28,28
         self.conv3_x = [PlainBlock(in_channels=nker,out_channels=2*nker)]
         self.conv3_x += [PlainBlock(in_channels=2*nker,out_channels=2*nker) for _ in range(nblocks[1]-1)]
         self.conv3_x = nn.Sequential(*self.conv3_x)
 
-        # conv4_x
+        # conv4_x: 28,28 -> 14,14
         self.conv4_x = [PlainBlock(in_channels=2*nker,out_channels=4*nker)]
         self.conv4_x += [PlainBlock(in_channels=4*nker,out_channels=4*nker) for _ in range(nblocks[2]-1)]
         self.conv4_x = nn.Sequential(*self.conv4_x)
 
-        # conv5_x
+        # conv5_x: 14,14 -> 7,7
         self.conv5_x = [PlainBlock(in_channels=4*nker,out_channels=8*nker)]
         self.conv5_x += [PlainBlock(in_channels=8*nker,out_channels=8*nker) for _ in range(nblocks[3]-1)]
         self.conv5_x = nn.Sequential(*self.conv5_x)
 
-        # 마지막 layer
+        # fully-connected layer: 7,7 -> 1,1
         self.avg_pooling = nn.AdaptiveAvgPool2d(output_size=1)
         self.fc = nn.Linear(in_features=8*nker,out_features=num_classes)
 
