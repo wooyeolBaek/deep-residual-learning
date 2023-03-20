@@ -5,7 +5,7 @@ from importlib import import_module
 from blocks import ConvLayer
 
 class ResNet(nn.Module):
-    nblocks = {
+    architectures = {
         18:(2,2,2,2),
         34:(3,4,6,3),
         50:(3,4,6,3),
@@ -16,8 +16,12 @@ class ResNet(nn.Module):
     def __init__(self, num_layers, in_channels, num_classes=10, nker=64, mapping='identity', dataset='cifar10'):
         super(ResNet, self).__init__()
 
+        # resblock: ResBlock or BottleneckBlock
         block_name = "ResBlock" if num_layers <=50 else "BottleneckBlock"
         resblock = getattr(import_module('blocks'), block_name)
+
+        # model architecture: the number of blocks
+        nblocks = self.architectures[num_layers]
 
         # conv1: 224,224 -> 112,112
         self.conv1 = ConvLayer(
@@ -26,100 +30,32 @@ class ResNet(nn.Module):
             kernel_size=7 if dataset=='imagenet' else 3,
             stride=2,
             padding=1,
-            bias=True,
         )
 
         # conv2_x: 112,112, -> 56,56
-        self.conv2_x = [
-            nn.MaxPool2d(
-                kernel_size=3,
-                stride=2,
-                padding=1,
-            )
-        ]
-        for _ in range(self.nblocks[num_layers][0]):
-            self.conv2_x.append(
-                resblock(
-                    in_channels=nker,
-                    out_channels=nker,
-                    bias=True,
-                    mapping='identity',
-                )
-            )
+        self.conv2_x = [nn.MaxPool2d(kernel_size=3,stride=2,padding=1)]
+        self.conv2_x += [resblock(in_channels=nker,out_channels=nker,mapping='identity') for _ in range(nblocks[0])]
         self.conv2_x = nn.Sequential(*self.conv2_x)
 
         # conv3_x: 56,56, -> 28,28
-        self.conv3_x = [
-            resblock(
-                in_channels=nker,
-                out_channels=2*nker,
-                bias=True,
-                mapping=mapping,
-            )
-        ]
-        for _ in range(self.nblocks[num_layers][1]-1):
-            self.conv3_x.append(
-                resblock(
-                    in_channels=2*nker,
-                    out_channels=2*nker,
-                    bias=True,
-                    mapping='identity',
-                )
-            )
+        self.conv3_x = [resblock(in_channels=nker,out_channels=2*nker,mapping=mapping)]
+        self.conv3_x += [resblock(in_channels=2*nker,out_channels=2*nker,mapping='identity') for _ in range(nblocks[1]-1)]
         self.conv3_x = nn.Sequential(*self.conv3_x)
 
         # conv4_x: 28,28 -> 14,14
-        self.conv4_x = [
-            resblock(
-                in_channels=2*nker,
-                out_channels=4*nker,
-                bias=True,
-                mapping=mapping,
-            )
-        ]
-        for _ in range(self.nblocks[num_layers][2]-1):
-            self.conv4_x.append(
-                resblock(
-                    in_channels=4*nker,
-                    out_channels=4*nker,
-                    bias=True,
-                    mapping='identity',
-                )
-            )
+        self.conv4_x = [resblock(in_channels=2*nker,out_channels=4*nker,mapping=mapping)]
+        self.conv4_x += [resblock(in_channels=4*nker,out_channels=4*nker,mapping='identity') for _ in range(nblocks[2]-1)]
         self.conv4_x = nn.Sequential(*self.conv4_x)
 
         # conv5_x: 14,14 -> 7,7
-        self.conv5_x = [
-            resblock(
-                in_channels=4*nker,
-                out_channels=8*nker,
-                bias=True,
-                mapping=mapping,
-            )
-        ]
-        for _ in range(self.nblocks[num_layers][3]-1):
-            self.conv5_x.append(
-                resblock(
-                    in_channels=8*nker,
-                    out_channels=8*nker,
-                    bias=True,
-                    mapping='identity',
-                )
-            )
+        self.conv5_x = [resblock(in_channels=4*nker,out_channels=8*nker,mapping=mapping)]
+        self.conv5_x += [resblock(in_channels=8*nker,out_channels=8*nker,mapping='identity') for _ in range(nblocks[3]-1)]
         self.conv5_x = nn.Sequential(*self.conv5_x)
 
-        # 마지막 layer: 7,7 -> 1,1
+        # fully-connected layer: 7,7 -> 1,1
         self.avg_pooling = nn.AdaptiveAvgPool2d(output_size=1)
-        self.fc = nn.Linear(
-            in_features=8*nker,
-            out_features=num_classes,
-        )
+        self.fc = nn.Linear(in_features=8*nker,out_features=num_classes)
 
-        self.max_pool = nn.MaxPool2d(
-            kernel_size=3,
-            stride=2,
-            padding=1,
-        )
     
     def forward(self, x):
         x = self.conv1(x)
