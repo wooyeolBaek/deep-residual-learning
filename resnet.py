@@ -107,17 +107,13 @@ class ResNet(nn.Module):
     def __init__(self, nblocks, block_name, in_channels=3, num_classes=10, mapping='B'):
         super(ResNet, self).__init__()
 
+        # the number of channels of the first conv layer
         nker = 64 if len(nblocks) == 4 else 16
 
-        # resblock: ResBlock or BottleneckBlock
-        #target = (50,101,152)
-        #block_name = "ResBlock" if num_layers not in target else "BottleneckBlock"
+        # import the block
         resblock = getattr(import_module('blocks'), block_name)
 
-        # model architecture: the number of blocks
-        #nblocks = self.architectures[num_layers]
-
-        # conv1
+        # --conv1
         # imagenet: size:224,224 -> 112,112 channels: 3 -> 64
         # cifar10: size:32,32 -> 32,32 channels: 3 -> 16
         self.conv1 = ConvBN(
@@ -128,28 +124,28 @@ class ResNet(nn.Module):
             padding=3 if len(nblocks) == 4 else 1,
         )
 
-        # conv2_x
+        # --conv2_x
         # imagenet: size:112,112 -> 56,56 channels: 64 -> 64
         # cifar10: size:32,32 -> 32,32 channels: 16 -> 16
         self.conv2_x = [nn.MaxPool2d(kernel_size=3,stride=2,padding=1)]
         self.conv2_x += [resblock(in_channels=nker,out_channels=nker,mapping=mapping) for _ in range(nblocks[0])]
         self.conv2_x = nn.Sequential(*self.conv2_x)
 
-        # conv3_x
+        # --conv3_x
         # imagenet: size:56,56 -> 28,28 channels: 64 -> 128
         # cifar10: size:32,32 -> 16,16 channels: 16 -> 32
         self.conv3_x = [resblock(in_channels=nker,out_channels=2*nker,mapping=mapping)]
         self.conv3_x += [resblock(in_channels=2*nker,out_channels=2*nker,mapping=mapping) for _ in range(nblocks[1]-1)]
         self.conv3_x = nn.Sequential(*self.conv3_x)
 
-        # conv4_x
+        # --conv4_x
         # imagenet: size:28,28 -> 14,14 channels: 128 -> 256
         # cifar10: size:16,16 -> 8,8 channels: 32 -> 64
         self.conv4_x = [resblock(in_channels=2*nker,out_channels=4*nker,mapping=mapping)]
         self.conv4_x += [resblock(in_channels=4*nker,out_channels=4*nker,mapping=mapping) for _ in range(nblocks[2]-1)]
         self.conv4_x = nn.Sequential(*self.conv4_x)
 
-        # conv5_x
+        # --conv5_x
         # imagenet: size:14,14 -> 7,7 channels: 256 -> 512
         # cifar10: pass
         self.conv5_x = None
@@ -158,7 +154,7 @@ class ResNet(nn.Module):
             self.conv5_x += [resblock(in_channels=8*nker,out_channels=8*nker,mapping=mapping) for _ in range(nblocks[3]-1)]
             self.conv5_x = nn.Sequential(*self.conv5_x)
 
-        # fully-connected layer
+        # --fully-connected layer
         # imagnet: size:7,7 -> 1,1 channels: 512
         # cifar10: size:8,8 -> 1,1 channels: 64
         self.avg_pooling = nn.AdaptiveAvgPool2d(output_size=1)
