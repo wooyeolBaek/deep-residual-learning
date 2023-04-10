@@ -32,7 +32,7 @@ def parse_args():
     parser.add_argument('--seed', type=int, default=2022)
     parser.add_argument('--epochs', type=int, default=164)
     parser.add_argument('--max_iter', type=int, default=64000)
-    parser.add_argument('--train_batch_size', type=int, default=128)
+    parser.add_argument('--train_batch_size', type=int, default=256)
     parser.add_argument('--valid_batch_size', type=int, default=256)
     parser.add_argument('--learning_rate', type=float, default=1e-1)
     parser.add_argument('--criterion', type=str, default='CrossEntropyLoss')
@@ -60,7 +60,7 @@ def parse_args():
 
     args = parser.parse_args()
 
-    args.epochs = (args.max_iter * args.train_batch_size * 2) // 45_000 + 1
+    args.epochs = (args.max_iter * args.train_batch_size) // 45_000 + 1
 
     args.wandb_run = args.model_name + '_' + args.mapping
 
@@ -147,43 +147,45 @@ def train(args, model, criterion, optimizer, train_loader, valid_loader):
                 for step, (inputs, labels) in enumerate(train_loader):
                     pbar.set_description(f"[Train] Epoch [{epoch+1}/{args.epochs}]")
 
-                    inputs = inputs.type(torch.float32).to(args.device)
-                    labels = labels.to(args.device)
+                    train_iteration += 1
+                    inputs1 = inputs[:args.train_batch_size//2].type(torch.float32).to(args.device)
+                    inputs2 = inputs[args.train_batch_size//2:].type(torch.float32).to(args.device)
+                    labels1 = labels[:args.train_batch_size//2].to(args.device)
+                    labels2 = labels[args.train_batch_size//2:].to(args.device)
 
                     with torch.cuda.amp.autocast():
-                        outputs = model(inputs)
-                        loss = criterion(outputs, labels)
+                        outputs1 = model(inputs1)
+                        outputs2 = model(inputs2)
+                        loss1 = criterion(outputs1, labels1)
+                        loss2 = criterion(outputs2, labels2)
                     
-                    scaler.scale(loss).backward()
-                    # 2개 step 마다 or 마지막 step일 때 grad 초기화
-                    if (step+1) % 2 == 0 or step==num_train_batches-1:
-                        scaler.step(optimizer)
-                        scaler.update()
-                        optimizer.zero_grad()
-                        train_iteration += 1
+                    scaler.scale(loss1).backward()
+                    scaler.scale(loss2).backward()
+                    scaler.step(optimizer)
+                    scaler.update()
+                    optimizer.zero_grad()
 
-                    top1_acc = top1_metric.forward(outputs, labels)
-                    top5_acc = top5_metric.forward(outputs, labels)
-                    mean_loss = loss.item() / len(labels)
-                    train_loss.append(loss.item())
+                    top1_metric.update(outputs1, labels1)
+                    top5_metric.update(outputs1, labels1)
+                    top1_metric.update(outputs2, labels2)
+                    top5_metric.update(outputs2, labels2)
+                    mean_loss = loss1.item() / len(labels)
+                    mean_loss = loss2.item() / len(labels)
+                    train_loss.append(loss1.item())
+                    train_loss.append(loss2.item())
 
                     pbar.update(1)
                     pbar.set_postfix(
                         {
-                            "step": step,
                             "iter": train_iteration,
                             "loss": round(mean_loss, 4),
-                            "top1_acc": top1_acc.item(),
-                            "top5_acc": top5_acc.item(),
                         }
                     )
                     
                     if train_iteration == args.max_iter:
                         break
-                    if train_iteration == 32000:
-                        optimizer.param_groups[0]['lr'] = 1e-2
-                    elif train_iteration == 48000:
-                        optimizer.param_groups[0]['lr'] = 1e-3
+                    if train_iteration==32000 or train_iteration==48000:
+                        optimizer.param_groups[0]['lr'] /= 10
 
             mean_train_loss = np.mean(train_loss)
             
@@ -255,18 +257,15 @@ def validation(args, epoch, model, criterion, valid_loader):
                 outputs = model(inputs)
                 loss = criterion(outputs, labels)
 
-                top1_acc = top1_metric.forward(outputs, labels)
-                top5_acc = top5_metric.forward(outputs, labels)
+                top1_metric.update(outputs, labels)
+                top5_metric.update(outputs, labels)
                 mean_loss = loss.item() / len(labels)
                 valid_loss.append(loss.item())
 
                 pbar.update(1)
                 pbar.set_postfix(
                     {
-                        "step": step,
                         "loss": round(mean_loss, 4),
-                        "top1_acc": top1_acc.item(),
-                        "top5_acc": top5_acc.item(),
                     }
                 )
                 
