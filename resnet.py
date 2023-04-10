@@ -200,14 +200,17 @@ class ResNet(nn.Module):
 if __name__=="__main__":
     batch_size = 16
     x = torch.randn((batch_size,3,32,32))
+    print("input shape:", x.shape)
 
     # model test
     for model_num in architectures.keys():
         model_name = "resnet" + str(model_num)
         
         print(model_name, "Test", end=' : ')
+        
         model = locals()[model_name](num_classes=10, mapping='B', block_name="ResBlock")
         out = model(x)
+
         if list(out.shape) != [16,10]:
             print(model_name, out.shape, end=' : ')
             print(f'Output type: {type(out)}')
