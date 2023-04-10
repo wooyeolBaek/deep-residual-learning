@@ -7,9 +7,8 @@ from tqdm import tqdm
 import torch
 import numpy as np
 import torch.nn as nn
-from torchvision import transforms
 from torch.utils.data import DataLoader
-from torchvision.datasets import CIFAR10
+import torchmetrics
 from sklearn.metrics import f1_score, accuracy_score
 
 import wandb
@@ -17,10 +16,11 @@ from pytz import timezone
 from datetime import datetime
 from argparse import ArgumentParser
 from importlib import import_module
-from PIL import Image
-from torchvision.transforms.functional import to_pil_image
 
+from dataset import WhitenedCIFAR10, PerPixelSubCIFAR10, SVD, PerPixelSubCIFAR10Split, preprocess
 
+import albumentations as A
+from albumentations.pytorch import ToTensorV2
 
 import warnings
 warnings.filterwarnings(action='ignore')
@@ -32,11 +32,12 @@ def parse_args():
     parser.add_argument('--seed', type=int, default=2022)
     parser.add_argument('--epochs', type=int, default=164)
     parser.add_argument('--max_iter', type=int, default=64000)
-    parser.add_argument('--train_batch_size', type=int, default=256)
+    parser.add_argument('--train_batch_size', type=int, default=128)
     parser.add_argument('--valid_batch_size', type=int, default=256)
     parser.add_argument('--learning_rate', type=float, default=1e-1)
     parser.add_argument('--criterion', type=str, default='CrossEntropyLoss')
     parser.add_argument('--weight_decay', type=float, default=1e-4)
+    parser.add_argument('--momentum', type=float, default=9e-1)
     parser.add_argument('--optimizer', type=str, default='SGD')
 
     # --experiment vars
@@ -50,6 +51,7 @@ def parse_args():
     # --etc
     parser.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--saved_dir", type=str, default="./trained_models")
+    parser.add_argument("--amp", type=bool, default=True)
 
     # --wandb configs
     parser.add_argument("--wandb_project", type=str, default="image_classification")
@@ -58,70 +60,37 @@ def parse_args():
 
     args = parser.parse_args()
 
-    args.epochs = (args.max_iter * args.train_batch_size) // 50_000 + 1
+    args.epochs = (args.max_iter * args.train_batch_size * 2) // 45_000 + 1
 
     args.wandb_run = args.model_name + '_' + args.mapping
 
     return args
 
 def seed_everything(seed):
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)  # if use multi-GPU
+    torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
-    np.random.seed(seed)
-    random.seed(seed)
 
 def get_learning_rate(optimizer):
     for param_group in optimizer.param_groups:
         return param_group['lr']
     
-class CustomNormalize(transforms.Normalize):
-    def __init__(self, mean):
-        super().__init__(mean=mean, std=[1, 1, 1])
-        self.train_mean = mean
+def get_topk_scores(outputs, labels, k):
+    assert len(labels)==len(outputs), f'len(labels)={len(labels)} should be the same as len(outputs)={len(outputs)}'
+    topk_scores = []
+    for output, label in zip(outputs, labels):
+        topk_score = torch.topk(torch.tensor(output), k)
 
-    def __call__(self, image):
-        image = transforms.ToTensor()(image)
-        image = transforms.Normalize(self.train_mean,(1,1,1))(image)
-        
-        image = to_pil_image(image)
-
-        return image
-
-class PerPixelSubtraction:
-    """per-pixel mean subtraction 기능
-    """
-    def __init__(self, pixel_mean):
-        self.pixel_mean = pixel_mean
-
+        topk_scores.append(1 if label.item() in [v.item() for v in topk_score[1]] else 0)
     
-    def __call__(self, image):
-        image = np.array(image)
-        print('image shape',image.shape)
-        print('pixel_mean shape',self.pixel_mean.shape)
-        assert image.shape != self.pixel_mean.shape, f'image.shape:{image.shape}이 pixel_mean.shape:{self.pixel_mean.shape}와 일치하지 않습니다.'
-        image = image - self.pixel_mean
-        return Image.fromarray(image)
-    
-def get_pixel_mean():
-    dataset = CIFAR10(
-        root="./data/CIFAR10/",
-        train=True,
-        transform=None,
-        download=True
-    )
-    cnt = 0
-    result = np.zeros_like(dataset[0][0])
-    for data in tqdm(dataset):
-        image = np.array(data[0])
-        result = result * (cnt/(cnt+1)) + image*(1/(cnt+1))
-        cnt += 1
+    return topk_scores
 
-    return np.array(result).astype(np.uint8)
-
-def train(args):
+def train(args, model, criterion, optimizer, train_loader, valid_loader):
     seed_everything(args.seed)
 
     start_time = datetime.now(timezone("Asia/Seoul")).strftime("_%y%m%d_%H%M%S")
@@ -155,52 +124,205 @@ def train(args):
         }
     )
 
-    train_dataset = CIFAR10(
-        root="./data/CIFAR10/",
-        train=True,
-        download=True
-    )
-    valid_dataset = CIFAR10(
-        root="./data/CIFAR10/",
-        train=False,
-        download=True
-    )
+    model.to(args.device)
+    criterion.to(args.device)
 
-    #pixel_mean = get_pixel_mean()
+    # --AMP
+    scaler = torch.cuda.amp.GradScaler(enabled=args.amp)
 
-    train_mean = train_dataset.data.mean(axis=(0,1,2)) / 255
-    train_std = train_dataset.data.std(axis=(0,1,2)) / 255
+    train_iteration = 0
+    best_mean_valid_loss = np.inf
 
-    train_transform = transforms.Compose([
-        #PerPixelSubtraction(pixel_mean),
-        #CustomNormalize(mean=train_mean),
-        transforms.RandomHorizontalFlip(p=0.5),
-        transforms.RandomCrop(
-            size=(32,32),
-            padding=4,
-            pad_if_needed=True,
-            fill=0,
+    with open(os.path.join(saved_dir,"log.txt"),"w") as f:
+        for epoch in range(args.epochs):
+
+            # --train
+            model.train()
+            train_loss = []
+            top1_metric = torchmetrics.Accuracy(task='multiclass', num_classes=10, top_k=1).to(args.device)
+            top5_metric = torchmetrics.Accuracy(task='multiclass', num_classes=10, top_k=5).to(args.device)
+
+            num_train_batches = math.ceil(len(train_dataset) / args.train_batch_size)
+            with tqdm(total=num_train_batches) as pbar:
+                for step, (inputs, labels) in enumerate(train_loader):
+                    pbar.set_description(f"[Train] Epoch [{epoch+1}/{args.epochs}]")
+
+                    inputs = inputs.type(torch.float32).to(args.device)
+                    labels = labels.to(args.device)
+
+                    with torch.cuda.amp.autocast():
+                        outputs = model(inputs)
+                        loss = criterion(outputs, labels)
+                    
+                    scaler.scale(loss).backward()
+                    # 2개 step 마다 or 마지막 step일 때 grad 초기화
+                    if (step+1) % 2 == 0 or step==num_train_batches-1:
+                        scaler.step(optimizer)
+                        scaler.update()
+                        optimizer.zero_grad()
+                        train_iteration += 1
+
+                    top1_acc = top1_metric.forward(outputs, labels)
+                    top5_acc = top5_metric.forward(outputs, labels)
+                    mean_loss = loss.item() / len(labels)
+                    train_loss.append(loss.item())
+
+                    pbar.update(1)
+                    pbar.set_postfix(
+                        {
+                            "step": step,
+                            "iter": train_iteration,
+                            "loss": round(mean_loss, 4),
+                            "top1_acc": top1_acc.item(),
+                            "top5_acc": top5_acc.item(),
+                        }
+                    )
+                    
+                    if train_iteration == args.max_iter:
+                        break
+                    if train_iteration == 32000:
+                        optimizer.param_groups[0]['lr'] = 1e-2
+                    elif train_iteration == 48000:
+                        optimizer.param_groups[0]['lr'] = 1e-3
+
+            mean_train_loss = np.mean(train_loss)
+            
+            top1_acc = top1_metric.compute().item()
+            top5_acc = top5_metric.compute().item()
+            top1_error = 100*(1-top1_acc)
+            top5_error = 100*(1-top5_acc)
+            top1_metric.reset()
+            top5_metric.reset()
+
+            train_log = "[EPOCH TRAIN {}/{}] : Train loss {} - Train top1_acc {} - Train top5_acc {}".format(
+                epoch + 1,
+                args.epochs,
+                round(mean_train_loss, 4),
+                round(top1_acc, 4),
+                round(top5_acc, 4),
+            )
+            f.write(train_log + "\n")
+
+            results_dict = validation(args, epoch, model, criterion, valid_loader)
+            f.write(results_dict["valid_log"] + "\n")
+            
+            if results_dict["mean_valid_loss"] <= best_mean_valid_loss:
+                print(f'New best model : {results_dict["mean_valid_loss"]:4.2%}! saving the best model..')
+                torch.save(model.module.state_dict(), f"{saved_dir}/best_loss.pth")
+                best_mean_valid_loss = results_dict["mean_valid_loss"]
+                counter = 0
+            else:
+                counter += 1
+            
+            torch.save(model.module.state_dict(), f"{saved_dir}/lastest.pth")
+            print()
+
+            wandb.log(
+                {
+                    "train/loss": round(mean_train_loss, 4),
+                    "train/top1_error": top1_error,
+                    "train/top5_error": top5_error,
+                    "train/top1_acc": round(top1_acc, 4),
+                    "train/top5_acc": round(top5_acc, 4),
+
+                    "valid/loss": round(results_dict["mean_valid_loss"], 4),
+                    "valid/top1_error": results_dict["top1_error"],
+                    "valid/top5_error": results_dict["top5_error"],
+                    "valid/top1_acc": round(results_dict["top1_acc"], 4),
+                    "valid/top5_acc": round(results_dict["top5_acc"], 4),
+
+                    "iter": train_iteration,
+                    "learning_rate": get_learning_rate(optimizer),
+                }
+            )
+
+def validation(args, epoch, model, criterion, valid_loader):
+    # val loop
+    model.eval()
+    valid_loss = []
+    top1_metric = torchmetrics.Accuracy(task='multiclass', num_classes=10, top_k=1).to(args.device)
+    top5_metric = torchmetrics.Accuracy(task='multiclass', num_classes=10, top_k=5).to(args.device)
+
+    with torch.no_grad():
+        num_valid_batches = math.ceil(len(valid_dataset) / args.valid_batch_size)
+        with tqdm(total=num_valid_batches) as pbar:
+            for step, (inputs, labels) in enumerate(valid_loader):
+                pbar.set_description(f"[Valid] Epoch [{epoch+1}/{args.epochs}]")
+
+                inputs = inputs.type(torch.float32).to(args.device)
+                labels = labels.to(args.device)
+
+                outputs = model(inputs)
+                loss = criterion(outputs, labels)
+
+                top1_acc = top1_metric.forward(outputs, labels)
+                top5_acc = top5_metric.forward(outputs, labels)
+                mean_loss = loss.item() / len(labels)
+                valid_loss.append(loss.item())
+
+                pbar.update(1)
+                pbar.set_postfix(
+                    {
+                        "step": step,
+                        "loss": round(mean_loss, 4),
+                        "top1_acc": top1_acc.item(),
+                        "top5_acc": top5_acc.item(),
+                    }
+                )
+                
+        mean_valid_loss = np.mean(valid_loss)
+
+        top1_acc = top1_metric.compute().item()
+        top5_acc = top5_metric.compute().item()
+        top1_error = 100*(1-top1_acc)
+        top5_error = 100*(1-top5_acc)
+        top1_metric.reset()
+        top5_metric.reset()
+        
+        valid_log = "[EPOCH Valid {}/{}] : Valid loss {} - Valid top1_acc - Valid top5_acc {}".format(
+            epoch + 1,
+            args.epochs,
+            round(mean_valid_loss, 4),
+            round(top1_acc, 4),
+            round(top5_acc, 4),
+        )
+        results_dict = {
+            "top1_error": top1_error,
+            "top5_error": top5_error,
+            "mean_valid_loss": mean_valid_loss,
+            "top1_acc": round(top1_acc, 4),
+            "top5_acc": round(top5_acc, 4),
+            "valid_log": valid_log
+        }
+        return results_dict
+
+
+if __name__ == '__main__':
+    args = parse_args()
+
+    train_transform = A.Compose([
+        A.PadIfNeeded(
+            min_height=40,
+            min_width=40,
+            value=0,
+            p=1.0
         ),
-        transforms.ColorJitter(
-            brightness=0,
-            contrast=0,
-            saturation=0,
-            hue=0,
-        ),
-        transforms.ToTensor(),
-        transforms.Normalize(train_mean,train_std),
-        #transforms.Normalize(train_mean,(1,1,1)),
+        A.RandomCrop(height=32, width=32, p=1.0),
+        A.HorizontalFlip(p=0.5),
+        # A.FancyPCA(
+        #     alpha=0.1,
+        #     always_apply=False,
+        #     p=0.5
+        # ),
+        ToTensorV2()
     ])
-    valid_transform = transforms.Compose([
-        #PerPixelSubtraction(pixel_mean),
-        #CustomNormalize(mean=train_mean),
-        transforms.ToTensor(),
-        transforms.Normalize(train_mean,train_std),
-        #transforms.Normalize(train_mean,(1,1,1)),
+    valid_transform = A.Compose([
+        ToTensorV2()
     ])
 
-    train_dataset.transform = train_transform
-    valid_dataset.transform = valid_transform
+    train_X, valid_X, train_Y, valid_Y = preprocess()
+    train_dataset = PerPixelSubCIFAR10Split(train_X, train_Y, transform=train_transform)
+    valid_dataset = PerPixelSubCIFAR10Split(valid_X, valid_Y, transform=valid_transform)
     
     train_loader = DataLoader(
         train_dataset,
@@ -231,176 +353,9 @@ def train(args):
     optimizer = opt_module(
         filter(lambda p: p.requires_grad, model.parameters()),
         lr=args.learning_rate,
-        momentum=0.9,
+        momentum=args.momentum,
         weight_decay=args.weight_decay,
     )
+    optimizer.zero_grad()
 
-    # --AMP
-    scaler = torch.cuda.amp.GradScaler()
-
-    iter = 0
-
-    best_avg_valid_loss = np.inf
-    best_valid_f1 = 0
-    targets = []
-    preds_list = []
-
-    num_train_batches = math.ceil(len(train_dataset) / args.train_batch_size)
-
-    with open(os.path.join(saved_dir,"log.txt"),"w") as f:
-        for epoch in range(args.epochs):
-            # train loop
-            model.train()
-            train_loss = 0
-            train_f1 = 0
-
-            with tqdm(total=num_train_batches) as pbar:
-                for idx, (inputs, labels) in enumerate(train_loader):
-                    iter += 1
-                    pbar.set_description(f"[Train] Epoch [{epoch+1}/{args.epochs}]")
-
-                    inputs = inputs.to(args.device)
-                    
-                    labels = labels.to(args.device)
-                    
-
-                    optimizer.zero_grad()
-
-                    model = model.to(args.device)
-
-                    with torch.cuda.amp.autocast():
-                        outputs = model(inputs)
-                        loss = criterion(outputs, labels)
-                        preds = torch.argmax(outputs, dim=-1)
-                    
-                    
-                    scaler.scale(loss).backward()
-                    # gradient clipping
-                    scaler.unscale_(optimizer)
-                    #torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=0.1)
-                    scaler.step(optimizer)
-                    scaler.update()
-
-                    targets += labels.tolist() # labels
-                    preds_list += preds.tolist() # preds
-                    train_f1 = f1_score(targets, preds_list, average='macro')
-                    train_acc = accuracy_score(targets, preds_list)
-
-                    pbar.update(1)
-
-                    pbar.set_postfix(
-                        {
-                            "Loss": round(loss.item(), 4),
-                            "Accuracy": round(train_acc, 4),
-                            "Macro-F1": round(train_f1, 4),
-                        }
-                    )
-                    
-                    train_loss += loss.item()
-
-                    if iter == args.max_iter:
-                        break
-                    if iter == 32000 or iter == 48000:
-                        optimizer.param_groups[0]['lr'] /= 10
-            
-            train_log = "[EPOCH TRAIN {}/{}] : Train Loss {} - Train Accuracy {} - Train macro-f1 {}".format(
-                epoch + 1,
-                args.epochs,
-                round(train_loss / len(train_loader), 4),
-                round(train_acc, 4),
-                round(train_f1, 4),
-            )
-            f.write(train_log + "\n")
-            
-            wandb.log(
-                {
-                    "train/loss": round(train_loss / len(train_loader), 4),
-                    "train/accuracy": round(train_acc, 4),
-                    "train/macro-f1": round(train_f1, 4),
-                    "train/learning_rate": get_learning_rate(optimizer)
-                }
-            )
-
-            # val loop
-            with torch.no_grad():
-                model.eval()
-
-                valid_loss = 0
-                valid_f1 = 0
-                targets = []
-                preds_list = []
-
-                num_valid_batches = math.ceil(len(valid_dataset) / args.valid_batch_size)
-
-                with tqdm(total=num_valid_batches) as pbar:
-                    for step, (inputs, labels) in enumerate(valid_loader):
-                        pbar.set_description(f"[Valid] Epoch [{epoch+1}/{args.epochs}]")
-
-                        inputs = inputs.to(args.device)
-                        
-                        labels = labels.to(args.device)
-                        
-
-                        model = model.to(args.device)
-
-                        outputs = model(inputs)
-                        
-                        loss = criterion(outputs, labels)
-                        preds = torch.argmax(outputs, dim=-1)
-
-                        targets += labels.tolist() # labels
-                        preds_list += preds.tolist() # preds
-                        valid_f1 = f1_score(targets, preds_list, average='macro')
-                        valid_acc = accuracy_score(targets, preds_list)
-
-                        pbar.update(1)
-
-                        pbar.set_postfix(
-                            {
-                                "Loss": round(loss.item(), 4),
-                                "Accuracy": round(valid_acc, 4),
-                                "Macro-F1": round(valid_f1, 4),
-                            }
-                        )
-                        
-                        valid_loss += loss.item()
-
-                avg_valid_loss = valid_loss / len(valid_loader)
-                best_avg_valid_loss = min(best_avg_valid_loss, avg_valid_loss)
-
-                valid_log = "[EPOCH VALID {}/{}] : VALID Loss {} - VALID Accuracy {} - VALID macro-f1 {}".format(
-                    epoch + 1,
-                    args.epochs,
-                    round(valid_loss / len(valid_loader), 4),
-                    round(valid_acc, 4),
-                    round(valid_f1, 4),
-                )
-                f.write(valid_log + "\n")
-
-                wandb.log(
-                    {
-                        "valid/loss": round(valid_loss / len(valid_loader), 4),
-                        "valid/accuracy": round(valid_acc, 4),
-                        "valid/macro-f1": round(valid_f1, 4),
-                    }
-                )
-
-                
-                if valid_f1 >= best_valid_f1:
-                    print(f"New best model for val macro-f1 : {valid_f1:4.2%}! saving the best model..")
-                    torch.save(model.module.state_dict(), f"{saved_dir}/best.pth")
-                    best_valid_f1 = valid_f1
-                    counter = 0
-                else:
-                    counter += 1
-                
-                torch.save(model.module.state_dict(), f"{saved_dir}/lastest.pth")
-                print()
-
-                
-
-
-if __name__ == '__main__':
-    args = parse_args()
-
-    train(args)
+    train(args, model, criterion, optimizer, train_loader, valid_loader)
