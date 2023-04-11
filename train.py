@@ -9,7 +9,6 @@ import numpy as np
 import torch.nn as nn
 from torch.utils.data import DataLoader
 import torchmetrics
-from sklearn.metrics import f1_score, accuracy_score
 
 import wandb
 from pytz import timezone
@@ -17,10 +16,10 @@ from datetime import datetime
 from argparse import ArgumentParser
 from importlib import import_module
 
-from dataset import WhitenedCIFAR10, PerPixelSubCIFAR10, SVD, PerPixelSubCIFAR10Split, preprocess
-
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
+
+from dataset import CustomCIFAR10, preprocess
 
 import warnings
 warnings.filterwarnings(action='ignore')
@@ -29,7 +28,7 @@ def parse_args():
     parser = ArgumentParser()
     
     # --optimizer vars
-    parser.add_argument('--seed', type=int, default=2022)
+    parser.add_argument('--seed', type=int, default=2023)
     parser.add_argument('--epochs', type=int, default=164)
     parser.add_argument('--max_iter', type=int, default=64000)
     parser.add_argument('--train_batch_size', type=int, default=256)
@@ -43,6 +42,11 @@ def parse_args():
     # --experiment vars
     parser.add_argument('--mapping', type=str, default='A')
     parser.add_argument('--block_name', type=str, default='ResBlock')
+
+    # --dataset vars
+    parser.add_argument('--whitening', type=bool, default=False)
+    parser.add_argument('--normalization', type=bool, default=False)
+    parser.add_argument('--epsilon', type=float, default=0.1)
 
     # --model vars
     parser.add_argument('--model', type=str, default='resnet', help='resnet, plain, vgg')
@@ -150,35 +154,29 @@ def train(args, model, criterion, optimizer, train_loader, valid_loader):
                     train_iteration += 1
                     inputs1 = inputs[:args.train_batch_size//2].type(torch.float32).to(args.device)
                     inputs2 = inputs[args.train_batch_size//2:].type(torch.float32).to(args.device)
-                    labels1 = labels[:args.train_batch_size//2].to(args.device)
-                    labels2 = labels[args.train_batch_size//2:].to(args.device)
+                    labels = labels.to(args.device)
 
                     with torch.cuda.amp.autocast():
                         outputs1 = model(inputs1)
                         outputs2 = model(inputs2)
-                        loss1 = criterion(outputs1, labels1)
-                        loss2 = criterion(outputs2, labels2)
+                        outputs = torch.cat([outputs1, outputs2], dim=0)
+                        loss = criterion(outputs, labels)
                     
-                    scaler.scale(loss1).backward()
-                    scaler.scale(loss2).backward()
+                    scaler.scale(loss).backward()
                     scaler.step(optimizer)
                     scaler.update()
                     optimizer.zero_grad()
 
-                    top1_metric.update(outputs1, labels1)
-                    top5_metric.update(outputs1, labels1)
-                    top1_metric.update(outputs2, labels2)
-                    top5_metric.update(outputs2, labels2)
-                    mean_loss = loss1.item() / len(labels)
-                    mean_loss = loss2.item() / len(labels)
-                    train_loss.append(loss1.item())
-                    train_loss.append(loss2.item())
+                    top1_metric.update(outputs, labels)
+                    top5_metric.update(outputs, labels)
+                    mean_loss = loss.item() / len(labels)
+                    train_loss.append(loss.item())
 
                     pbar.update(1)
                     pbar.set_postfix(
                         {
-                            "iter": train_iteration,
                             "loss": round(mean_loss, 4),
+                            "iter": train_iteration,
                         }
                     )
                     
@@ -319,9 +317,13 @@ if __name__ == '__main__':
         ToTensorV2()
     ])
 
-    train_X, valid_X, train_Y, valid_Y = preprocess()
-    train_dataset = PerPixelSubCIFAR10Split(train_X, train_Y, transform=train_transform)
-    valid_dataset = PerPixelSubCIFAR10Split(valid_X, valid_Y, transform=valid_transform)
+    train_X, valid_X, train_Y, valid_Y = preprocess(
+        whitening=args.whitening,
+        normalization=args.normalization,
+        epsilon=args.epsilon
+    )
+    train_dataset = CustomCIFAR10(train_X, train_Y, transform=train_transform)
+    valid_dataset = CustomCIFAR10(valid_X, valid_Y, transform=valid_transform)
     
     train_loader = DataLoader(
         train_dataset,
