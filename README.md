@@ -2,7 +2,7 @@
 
 
 
-## 논문 요약    
+## Summary
 [Deep Residual Learning for Image Recognition Review](https://www.notion.so/Deep-Residual-Learning-for-Image-Recognition-b5df2d5c18ad47cc9f5003f1037652ff)
     
 
@@ -34,7 +34,7 @@
 1. input과 output의 차원이 같은 경우, identity shortcut만 적용
 2. input과 output의 차원이 다른 경우(두 가지 방법): 1) `zero-pad` 적용 후, `identity shortcut` 적용, 2) 1x1 conv로 `projection shortcut` 적용
 
-## 실험 1.
+## Experiment 1.
 
 동일한 parameter 개수에서 ResNet과 Plain Net의 깊이에 따른 Top1-error의 변화
 
@@ -44,7 +44,7 @@
 
 <img src="assets/1-Figure6.png">
 
-#### 실험 결과
+#### Results
 
 <img src="assets/2-plain_resnet.png">
 
@@ -66,7 +66,7 @@
 
 <img src="assets/4-resnet.png">
 
-## 실험 2.
+## Experiment 2.
 
 논문에서 일반적으로 사용하는 `Normalize` 대신 `Per-pixel mean subtraction`을 사용해 성능 차이를 비교해보고자 진행
 
@@ -94,7 +94,7 @@
 
 [****Preprocessing for deep learning: from covariance matrix to image whitening****](https://www.notion.so/Preprocessing-for-deep-learning-from-covariance-matrix-to-image-whitening-25a2419afaaf4e03adfa76c890b7deab)
 
-## 공통 실험 조건
+## Experiment Settings
 
 논문에서 CIFAR-10의 조건과 최대한 동일하게 구성
 
@@ -117,7 +117,7 @@
 
 - 원본 32x32 이미지 그대로 사용
 
-## 해결하지 못한 문제들
+## Issues
 
 ### 1. ResNet의 valid loss가 증가하는 구간 존재
 
