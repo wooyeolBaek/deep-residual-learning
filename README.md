@@ -132,7 +132,7 @@
 32,000 iter에서 learning rate을 10으로 나눈 이후, valid loss가 증가
 
 - Plain net에서는 증가하지 않았음
-- 오버피팅으로 예상되지만, 실험 조건인 weight decay=0.0001를 변경할 수 없어 L2 Normalization은 시도하지 못했고, 논문에서 ImageNet 실험시 사용한 FancyPCA를 적용해봤다.
+- 오버피팅으로 예상되지만, 실험 조건으로 dropout은 사용하지 않아 L2 Normalization은 시도하지 못했고, 논문에서 ImageNet 실험시 사용한 FancyPCA를 적용해봤다.
     - FancyPCA: altering the intensities of the RGB channels
         - RGB 픽셀에 PCA 적용
             - 이미지에 `주성분 x 고유값 x N(0,0.1)에서 추출한 임의의 값` 더해줌
