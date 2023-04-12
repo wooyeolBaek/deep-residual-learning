@@ -6,7 +6,6 @@ from tqdm import tqdm
 
 import torch
 import numpy as np
-import torch.nn as nn
 from torch.utils.data import DataLoader
 import torchmetrics
 
@@ -71,6 +70,7 @@ def parse_args():
 
     args.epochs = (args.max_iter * args.train_batch_size) // 45_000 + 1
 
+    args.model = 'models.'+args.model
     if args.model_name == 'resnet110':
         args.learning_rate = 1e-2
 

@@ -1,6 +1,11 @@
+import os
+import sys
+sys.path.append(os.getcwd())
+
 import torch
 import torch.nn as nn
-from blocks import ConvBN, PlainBlock
+
+from models.blocks import ConvBN, PlainBlock
 
 architectures = {
         # imagenet

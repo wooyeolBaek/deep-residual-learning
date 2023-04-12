@@ -137,7 +137,7 @@ Zero-centering & Normalization & Decorrelation
         
         [](https://dl.acm.org/doi/abs/10.1145/3065386)
         
-    - Augmentation 적용시 완화되지만, 완벽히 개선되지는 않았음
+    - Augmentation 적용시 어느 정도는 완화되었다.
     
     <img src="assets/6-FancyPCA.png">
     

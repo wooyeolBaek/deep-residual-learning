@@ -1,8 +1,13 @@
+import os
+import sys
+sys.path.append(os.getcwd())
+
 import torch
 import torch.nn as nn
 from importlib import import_module
 
-from blocks import ConvBN
+from models.blocks import ConvBN
+
 
 architectures = {
         # imagenet
@@ -111,7 +116,7 @@ class ResNet(nn.Module):
         nker = 64 if len(nblocks) == 4 else 16
 
         # import the block
-        resblock = getattr(import_module('blocks'), block_name)
+        resblock = getattr(import_module('models.blocks'), block_name)
 
         # --conv1
         # imagenet: size:224,224 -> 112,112 channels: 3 -> 64

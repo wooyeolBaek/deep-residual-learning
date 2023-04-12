@@ -1,6 +1,11 @@
+import os
+import sys
+sys.path.append(os.getcwd())
+
 import torch
 import torch.nn as nn
-from blocks import ConvBN
+
+from models.blocks import ConvBN
 
 def vgg19(num_classes, **kwargs):
     return Vgg(
