@@ -14,8 +14,8 @@
 
 ### identity mapping을 추가해 최적화를 단순화
 
-- 기존: `$x \rightarrow H(x)$`로 알 수 없는 값인 `$H(x)=?$`를 최적화해 어려움
-- identity mapping을 추가한 새로운 방식: `$x \rightarrow F(x)=H(x)-x$`는 `$H(x)=x$`로 최적화해 목적이 명확해 학습이 쉬워짐
+- 기존: $x \rightarrow H(x)$로 알 수 없는 값인 $H(x)=?$를 최적화해 어려움
+- identity mapping을 추가한 새로운 방식: $x \rightarrow F(x)=H(x)-x$는 $H(x)=x$로 최적화해 목적이 명확해 학습이 쉬워짐
     - identity mapping이 최적이라는 의미는 아님
     - 즉, identity mapping을 추가(good reformulation)를 통한 preconditioning으로 최적화를 단순화
 
