@@ -14,14 +14,16 @@
 
 ### identity mapping을 추가해 최적화를 단순화
 
-기존의 $x \rightarrow H(x)$로 3x3 Conv 두 개가 $H(x)=?$ 최적화로 어려웠지만, identity mapping을 추가한 새로운 방식의 $x \rightarrow F(x)=H(x)-x$는 $H(x)=x$로 최적화는 목적이 명확해 학습이 쉬워짐
+- 기존: `$x \rightarrow H(x)$`로 알 수 없는 값인 `$H(x)=?$`를 최적화해 어려움
+- identity mapping을 추가한 새로운 방식: `$x \rightarrow F(x)=H(x)-x$`는 `$H(x)=x$`로 최적화해 목적이 명확해 학습이 쉬워짐
+    - identity mapping이 최적이라는 의미는 아님
 
 - 즉, identity mapping을 추가(good reformulation)를 통한 preconditioning으로 최적화를 단순화
 
 ### 두 개의 3x3 Conv 연산에서 차원이 증가하는 경우 사용한 방법
 
-1. identity mapping: 복잡도를 증가시키지 않음
-2. projection mapping: 비교적 높은 성능
+1. `identity mapping`: 복잡도를 증가시키지 않음
+2. `projection mapping`: 비교적 높은 성능
 
 ### Plain net 구현
 
@@ -31,13 +33,13 @@
 ### ResNet 구현
 
 1. input과 output의 차원이 같은 경우, identity shortcut만 적용
-2. input과 output의 차원이 다른 경우(두 가지 방법): 1) zero-pad 적용 후, identity shortcut 적용, 2) 1x1 conv로 projection shortcut 적용
+2. input과 output의 차원이 다른 경우(두 가지 방법): 1) `zero-pad` 적용 후, `identity shortcut` 적용, 2) 1x1 conv로 `projection shortcut` 적용
 
 ## 실험 1.
 
 동일한 parameter 개수에서 ResNet과 Plain Net의 깊이에 따른 Top1-error의 변화
 
-- Degradation 문제: network가 깊어질수록, train/valid error 모두 증가하는 현상
+- `Degradation` 문제: network가 깊어질수록, train/valid error 모두 증가하는 현상(Plain net에서 발생)
 
 #### 논문의 Figure 6.
 
@@ -75,19 +77,19 @@
 
 ### 1. Per-pixel mean subtraction
 
-Zero-centering
+`Zero-centering`
 
 - train/valid 모두 train 이미지 45,000장의 픽셀 별 평균 값을 뺀 전처리 적용
 
 ### 2. Per-pixel mean subtraction & Normalization
 
-Zero-centering & Normalization
+`Zero-centering & Normalization`
 
 - train/valid 모두 train 이미지 45,000장의 픽셀 별 평균 값을 빼고, 255로 나누는 전처리 적용
 
 ### 3. Per-pixel mean subtraction & Normalization & Whitening
 
-Zero-centering & Normalization & Decorrelation
+`Zero-centering & Normalization & Decorrelation`
 
 - train/valid 모두 train 이미지 45,000장의 픽셀 별 평균 값을 빼고, 255로 나누고, train 이미지들로 구한 covariance matrix의 eigenvector를 사용해 이미지 사이의 correlation을 제거하는 전처리 적용
 
