@@ -34,6 +34,8 @@
 1. input과 output의 차원이 같은 경우, identity shortcut만 적용
 2. input과 output의 차원이 다른 경우(두 가지 방법): 1) `zero-pad` 적용 후, `identity shortcut` 적용, 2) 1x1 conv로 `projection shortcut` 적용
 
+***
+
 ## Experiment 1.
 
 동일한 parameter 개수에서 ResNet과 Plain Net의 깊이에 따른 Top1-error의 변화
@@ -66,6 +68,8 @@
 
 <img src="assets/4-resnet.png">
 
+***
+
 ## Experiment 2.
 
 논문에서 일반적으로 사용하는 `Normalize` 대신 `Per-pixel mean subtraction`을 사용해 성능 차이를 비교해보고자 진행
@@ -94,6 +98,8 @@
 
 [****Preprocessing for deep learning: from covariance matrix to image whitening****](https://www.notion.so/Preprocessing-for-deep-learning-from-covariance-matrix-to-image-whitening-25a2419afaaf4e03adfa76c890b7deab)
 
+***
+
 ## Experiment Settings
 
 논문에서 CIFAR-10의 조건과 최대한 동일하게 구성
@@ -116,6 +122,8 @@
 #### Testing
 
 - 원본 32x32 이미지 그대로 사용
+
+***
 
 ## Issues
 
