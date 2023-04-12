@@ -1,5 +1,4 @@
-# pytorch-resnet-implementation
-pytorch-implementation-of-deep-residual-learning
+# pytorch-implementation-of-deep-residual-learning
 
 
 
