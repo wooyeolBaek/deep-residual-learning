@@ -155,3 +155,6 @@
 - Kaiming He의 Issue에서 AlexNet에서 사용해서 그대로 사용했고, per-channel mean을 사용해도 큰 차이 없다고 함
     
     [https://github.com/KaimingHe/deep-residual-networks/issues/5](https://github.com/KaimingHe/deep-residual-networks/issues/5)
+
+## References
+[Deep Residual Learning for Image Recognition](https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf)
