@@ -44,13 +44,18 @@ def parse_args():
     parser.add_argument('--block_name', type=str, default='ResBlock')
 
     # --dataset vars
+    parser.add_argument('--per_pixel_mean_sub', type=bool, default=True)
     parser.add_argument('--whitening', type=bool, default=False)
     parser.add_argument('--normalization', type=bool, default=False)
     parser.add_argument('--epsilon', type=float, default=0.1)
+    parser.add_argument('--include_valid', type=bool, default=False)
 
     # --model vars
     parser.add_argument('--model', type=str, default='resnet', help='resnet, plain, vgg')
     parser.add_argument('--model_name', type=str, default='resnet18', help='resnet18, plain18, ...')
+
+    # --gradient_clipping
+    parser.add_argument("--gradient_clipping", type=bool, default=False)
 
     # --etc
     parser.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
@@ -65,6 +70,9 @@ def parse_args():
     args = parser.parse_args()
 
     args.epochs = (args.max_iter * args.train_batch_size) // 45_000 + 1
+
+    if args.model_name == 'resnet110':
+        args.learning_rate = 1e-2
 
     args.wandb_run = args.model_name + '_' + args.mapping
 
@@ -161,8 +169,12 @@ def train(args, model, criterion, optimizer, train_loader, valid_loader):
                         outputs2 = model(inputs2)
                         outputs = torch.cat([outputs1, outputs2], dim=0)
                         loss = criterion(outputs, labels)
-                    
+
                     scaler.scale(loss).backward()
+                    # gradient clipping
+                    if args.gradient_clipping:
+                        scaler.unscale_(optimizer)
+                        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=0.1)
                     scaler.step(optimizer)
                     scaler.update()
                     optimizer.zero_grad()
@@ -182,7 +194,9 @@ def train(args, model, criterion, optimizer, train_loader, valid_loader):
                     
                     if train_iteration == args.max_iter:
                         break
-                    if train_iteration==32000 or train_iteration==48000:
+                    if train_iteration==400:
+                        optimizer.param_groups[0]['lr'] = 1e-1
+                    elif train_iteration==32000 or train_iteration==48000:
                         optimizer.param_groups[0]['lr'] /= 10
 
             mean_train_loss = np.mean(train_loss)
@@ -210,9 +224,6 @@ def train(args, model, criterion, optimizer, train_loader, valid_loader):
                 print(f'New best model : {results_dict["mean_valid_loss"]:4.2%}! saving the best model..')
                 torch.save(model.module.state_dict(), f"{saved_dir}/best_loss.pth")
                 best_mean_valid_loss = results_dict["mean_valid_loss"]
-                counter = 0
-            else:
-                counter += 1
             
             torch.save(model.module.state_dict(), f"{saved_dir}/lastest.pth")
             print()
@@ -318,9 +329,11 @@ if __name__ == '__main__':
     ])
 
     train_X, valid_X, train_Y, valid_Y = preprocess(
+        per_pixel_mean_sub=args.per_pixel_mean_sub,
         whitening=args.whitening,
         normalization=args.normalization,
-        epsilon=args.epsilon
+        epsilon=args.epsilon,
+        include_valid=args.include_valid
     )
     train_dataset = CustomCIFAR10(train_X, train_Y, transform=train_transform)
     valid_dataset = CustomCIFAR10(valid_X, valid_Y, transform=valid_transform)

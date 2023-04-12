@@ -23,7 +23,7 @@ class CustomCIFAR10(Dataset):
     def __len__(self):
         return len(self.X)
 
-def preprocess(whitening=False, normalization=False, epsilon=0.1):
+def preprocess(per_pixel_mean_sub=True, whitening=False, normalization=False, epsilon=0.1, include_valid=True):
     print("Start Preprocessing...")
     train_dataset = CIFAR10(
         root="./data/CIFAR10/",
@@ -50,11 +50,14 @@ def preprocess(whitening=False, normalization=False, epsilon=0.1):
 
     if normalization:
         train_X = train_X / 255.
-        valid_X = valid_X / 255.
+        if include_valid:
+            valid_X = valid_X / 255.
 
-    train_mean = train_X.mean(axis=0)
-    train_X = train_X - train_mean
-    valid_X = valid_X - train_mean
+    if per_pixel_mean_sub:
+        train_mean = train_X.mean(axis=0)
+        train_X = train_X - train_mean
+        if include_valid:
+            valid_X = valid_X - train_mean
 
     if not normalization:
         train_X = train_X.astype(np.uint8)
