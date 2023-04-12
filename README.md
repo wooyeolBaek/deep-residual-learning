@@ -3,11 +3,8 @@ pytorch-implementation-of-deep-residual-learning
 
 
 
-## 논문 요약
-
-- deep-residual-learning-for-image-recognition 리뷰
-    
-    [Deep Residual Learning for Image Recognition](https://www.notion.so/Deep-Residual-Learning-for-Image-Recognition-b5df2d5c18ad47cc9f5003f1037652ff)
+## 논문 요약    
+[Deep Residual Learning for Image Recognition Review](https://www.notion.so/Deep-Residual-Learning-for-Image-Recognition-b5df2d5c18ad47cc9f5003f1037652ff)
     
 
 ### residual learning의 장점
@@ -45,11 +42,11 @@ pytorch-implementation-of-deep-residual-learning
 
 #### 논문의 Figure 6.
 
-![IMG_BF89FF64928B-1.jpeg](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3bb55704-a75c-48ca-9cde-2224edf42643/IMG_BF89FF64928B-1.jpeg)
+<img src="assets/1-Figure6.png">
 
 #### 실험 결과
 
-![plain_resnet.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c173b781-970e-4f50-9671-981b66a7fe45/plain_resnet.png)
+<img src="assets/2-plain_resnet.png">
 
 - 실험 조건
     
@@ -61,13 +58,13 @@ pytorch-implementation-of-deep-residual-learning
 
 깊은 네트워크일수록 높은 error 갖음(점선: train error, 실선: valid error)
 
-![plain.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3d7860ba-46d7-47cf-ad98-ac24e22c1ad7/plain.png)
+<img src="assets/3-plain.png">
 
 #### ResNet은 깊어져도 Degradation 문제가 발생하지 않음(오른쪽)
 
 깊은 네트워크일수록 낮은 error 갖음(점선: train error, 실선: valid error)
 
-![resnet.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1217da13-d7ed-4201-92a8-38a56adf4ad9/resnet.png)
+<img src="assets/4-resnet.png">
 
 ## 실험 2.
 
@@ -75,7 +72,7 @@ pytorch-implementation-of-deep-residual-learning
 
 `Per-pixel mean subtraction` vs `Per-pixel mean subtraction & normalization` vs `Per-pixel mean subtraction & normalization & Whitening`비교
 
-![total.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/59c569e2-cd46-4864-81be-5a1c6a492a9c/total.png)
+<img src="assets/5-total.png">
 
 ### 1. Per-pixel mean subtraction
 
@@ -142,7 +139,7 @@ Zero-centering & Normalization & Decorrelation
         
     - Augmentation 적용시 완화되지만, 완벽히 개선되지는 않았음
     
-    ![FancyPCA.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/15666268-8d2d-4bbe-a0fd-ac482c03f36e/FancyPCA.png)
+    <img src="assets/6-FancyPCA.png">
     
 
 ### 2. Whitening을 적용한 경우 성능이 Per-pixel Subtraction만 적용한 경우보다 높은 성능을 갖는 현상의 이유
