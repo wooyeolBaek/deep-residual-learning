@@ -52,6 +52,7 @@ def parse_args():
     # --model vars
     parser.add_argument('--model', type=str, default='resnet', help='resnet, plain, vgg')
     parser.add_argument('--model_name', type=str, default='resnet18', help='resnet18, plain18, ...')
+    parser.add_argument('--save_model', type=bool, default=False)
 
     # --gradient_clipping
     parser.add_argument("--gradient_clipping", type=bool, default=False)
@@ -151,8 +152,6 @@ def train(args, model, criterion, optimizer, train_loader, valid_loader):
             # --train
             model.train()
             train_loss = []
-            top1_metric = torchmetrics.Accuracy(task='multiclass', num_classes=10, top_k=1).to(args.device)
-            top5_metric = torchmetrics.Accuracy(task='multiclass', num_classes=10, top_k=5).to(args.device)
 
             num_train_batches = math.ceil(len(train_dataset) / args.train_batch_size)
             with tqdm(total=num_train_batches) as pbar:
@@ -179,10 +178,8 @@ def train(args, model, criterion, optimizer, train_loader, valid_loader):
                     scaler.update()
                     optimizer.zero_grad()
 
-                    top1_metric.update(outputs, labels)
-                    top5_metric.update(outputs, labels)
                     mean_loss = loss.item() / len(labels)
-                    train_loss.append(loss.item())
+                    train_loss.append(mean_loss)
 
                     pbar.update(1)
                     pbar.set_postfix(
@@ -200,41 +197,30 @@ def train(args, model, criterion, optimizer, train_loader, valid_loader):
                         optimizer.param_groups[0]['lr'] /= 10
 
             mean_train_loss = np.mean(train_loss)
-            
-            top1_acc = top1_metric.compute().item()
-            top5_acc = top5_metric.compute().item()
-            top1_error = 100*(1-top1_acc)
-            top5_error = 100*(1-top5_acc)
-            top1_metric.reset()
-            top5_metric.reset()
 
-            train_log = "[EPOCH TRAIN {}/{}] : Train loss {} - Train top1_acc {} - Train top5_acc {}".format(
+            train_log = "[EPOCH TRAIN {}/{}] : Train loss {}".format(
                 epoch + 1,
                 args.epochs,
                 round(mean_train_loss, 4),
-                round(top1_acc, 4),
-                round(top5_acc, 4),
             )
             f.write(train_log + "\n")
 
             results_dict = validation(args, epoch, model, criterion, valid_loader)
             f.write(results_dict["valid_log"] + "\n")
             
-            if results_dict["mean_valid_loss"] <= best_mean_valid_loss:
-                print(f'New best model : {results_dict["mean_valid_loss"]:4.2%}! saving the best model..')
-                torch.save(model.module.state_dict(), f"{saved_dir}/best_loss.pth")
-                best_mean_valid_loss = results_dict["mean_valid_loss"]
+            if args.save_model:
+                if results_dict["mean_valid_loss"] <= best_mean_valid_loss:
+                    print(f'New best model : {results_dict["mean_valid_loss"]:4.2%}! saving the best model..')
+                    torch.save(model.module.state_dict(), f"{saved_dir}/best_loss.pth")
+                    best_mean_valid_loss = results_dict["mean_valid_loss"]
             
-            torch.save(model.module.state_dict(), f"{saved_dir}/lastest.pth")
+
+                torch.save(model.module.state_dict(), f"{saved_dir}/lastest.pth")
             print()
 
             wandb.log(
                 {
                     "train/loss": round(mean_train_loss, 4),
-                    "train/top1_error": top1_error,
-                    "train/top5_error": top5_error,
-                    "train/top1_acc": round(top1_acc, 4),
-                    "train/top5_acc": round(top5_acc, 4),
 
                     "valid/loss": round(results_dict["mean_valid_loss"], 4),
                     "valid/top1_error": results_dict["top1_error"],
@@ -269,7 +255,7 @@ def validation(args, epoch, model, criterion, valid_loader):
                 top1_metric.update(outputs, labels)
                 top5_metric.update(outputs, labels)
                 mean_loss = loss.item() / len(labels)
-                valid_loss.append(loss.item())
+                valid_loss.append(mean_loss)
 
                 pbar.update(1)
                 pbar.set_postfix(
@@ -347,7 +333,7 @@ if __name__ == '__main__':
     valid_loader = DataLoader(
         valid_dataset,
         batch_size=args.valid_batch_size,
-        shuffle=True,
+        shuffle=False,
         num_workers=1
     )
 
