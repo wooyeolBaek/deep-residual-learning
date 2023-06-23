@@ -1,0 +1,366 @@
+[EPOCH TRAIN 1/183] : Train loss 0.016 - Train top1_acc 0.2362 - Train top5_acc 0.7595
+[EPOCH Valid 1/183] : Valid loss 0.0196 - Valid top1_acc - Valid top5_acc 0.28
+[EPOCH TRAIN 2/183] : Train loss 0.0139 - Train top1_acc 0.3354 - Train top5_acc 0.86
+[EPOCH Valid 2/183] : Valid loss 0.0175 - Valid top1_acc - Valid top5_acc 0.3576
+[EPOCH TRAIN 3/183] : Train loss 0.0131 - Train top1_acc 0.3777 - Train top5_acc 0.8847
+[EPOCH Valid 3/183] : Valid loss 0.0168 - Valid top1_acc - Valid top5_acc 0.374
+[EPOCH TRAIN 4/183] : Train loss 0.0125 - Train top1_acc 0.4111 - Train top5_acc 0.9004
+[EPOCH Valid 4/183] : Valid loss 0.0158 - Valid top1_acc - Valid top5_acc 0.4328
+[EPOCH TRAIN 5/183] : Train loss 0.0117 - Train top1_acc 0.4521 - Train top5_acc 0.9147
+[EPOCH Valid 5/183] : Valid loss 0.017 - Valid top1_acc - Valid top5_acc 0.4204
+[EPOCH TRAIN 6/183] : Train loss 0.0109 - Train top1_acc 0.494 - Train top5_acc 0.928
+[EPOCH Valid 6/183] : Valid loss 0.0182 - Valid top1_acc - Valid top5_acc 0.484
+[EPOCH TRAIN 7/183] : Train loss 0.01 - Train top1_acc 0.5348 - Train top5_acc 0.9413
+[EPOCH Valid 7/183] : Valid loss 0.0149 - Valid top1_acc - Valid top5_acc 0.5456
+[EPOCH TRAIN 8/183] : Train loss 0.0092 - Train top1_acc 0.5776 - Train top5_acc 0.951
+[EPOCH Valid 8/183] : Valid loss 0.0166 - Valid top1_acc - Valid top5_acc 0.555
+[EPOCH TRAIN 9/183] : Train loss 0.0086 - Train top1_acc 0.6088 - Train top5_acc 0.9575
+[EPOCH Valid 9/183] : Valid loss 0.0125 - Valid top1_acc - Valid top5_acc 0.6132
+[EPOCH TRAIN 10/183] : Train loss 0.0079 - Train top1_acc 0.6421 - Train top5_acc 0.966
+[EPOCH Valid 10/183] : Valid loss 0.014 - Valid top1_acc - Valid top5_acc 0.553
+[EPOCH TRAIN 11/183] : Train loss 0.0075 - Train top1_acc 0.6614 - Train top5_acc 0.9693
+[EPOCH Valid 11/183] : Valid loss 0.0127 - Valid top1_acc - Valid top5_acc 0.607
+[EPOCH TRAIN 12/183] : Train loss 0.0071 - Train top1_acc 0.685 - Train top5_acc 0.9736
+[EPOCH Valid 12/183] : Valid loss 0.0117 - Valid top1_acc - Valid top5_acc 0.6538
+[EPOCH TRAIN 13/183] : Train loss 0.0067 - Train top1_acc 0.6979 - Train top5_acc 0.9763
+[EPOCH Valid 13/183] : Valid loss 0.0094 - Valid top1_acc - Valid top5_acc 0.7008
+[EPOCH TRAIN 14/183] : Train loss 0.0064 - Train top1_acc 0.7147 - Train top5_acc 0.9774
+[EPOCH Valid 14/183] : Valid loss 0.0116 - Valid top1_acc - Valid top5_acc 0.6718
+[EPOCH TRAIN 15/183] : Train loss 0.0061 - Train top1_acc 0.7272 - Train top5_acc 0.9786
+[EPOCH Valid 15/183] : Valid loss 0.0116 - Valid top1_acc - Valid top5_acc 0.658
+[EPOCH TRAIN 16/183] : Train loss 0.0059 - Train top1_acc 0.7401 - Train top5_acc 0.9815
+[EPOCH Valid 16/183] : Valid loss 0.0124 - Valid top1_acc - Valid top5_acc 0.6142
+[EPOCH TRAIN 17/183] : Train loss 0.0057 - Train top1_acc 0.7497 - Train top5_acc 0.9822
+[EPOCH Valid 17/183] : Valid loss 0.0089 - Valid top1_acc - Valid top5_acc 0.7188
+[EPOCH TRAIN 18/183] : Train loss 0.0054 - Train top1_acc 0.7591 - Train top5_acc 0.9828
+[EPOCH Valid 18/183] : Valid loss 0.0076 - Valid top1_acc - Valid top5_acc 0.7374
+[EPOCH TRAIN 19/183] : Train loss 0.0053 - Train top1_acc 0.764 - Train top5_acc 0.9837
+[EPOCH Valid 19/183] : Valid loss 0.0084 - Valid top1_acc - Valid top5_acc 0.7512
+[EPOCH TRAIN 20/183] : Train loss 0.0052 - Train top1_acc 0.7695 - Train top5_acc 0.9858
+[EPOCH Valid 20/183] : Valid loss 0.0077 - Valid top1_acc - Valid top5_acc 0.7496
+[EPOCH TRAIN 21/183] : Train loss 0.005 - Train top1_acc 0.7806 - Train top5_acc 0.9856
+[EPOCH Valid 21/183] : Valid loss 0.0088 - Valid top1_acc - Valid top5_acc 0.6782
+[EPOCH TRAIN 22/183] : Train loss 0.0049 - Train top1_acc 0.7822 - Train top5_acc 0.9868
+[EPOCH Valid 22/183] : Valid loss 0.0061 - Valid top1_acc - Valid top5_acc 0.7684
+[EPOCH TRAIN 23/183] : Train loss 0.0048 - Train top1_acc 0.7864 - Train top5_acc 0.9872
+[EPOCH Valid 23/183] : Valid loss 0.0069 - Valid top1_acc - Valid top5_acc 0.7736
+[EPOCH TRAIN 24/183] : Train loss 0.0047 - Train top1_acc 0.792 - Train top5_acc 0.9879
+[EPOCH Valid 24/183] : Valid loss 0.0089 - Valid top1_acc - Valid top5_acc 0.7432
+[EPOCH TRAIN 25/183] : Train loss 0.0045 - Train top1_acc 0.8013 - Train top5_acc 0.9889
+[EPOCH Valid 25/183] : Valid loss 0.0067 - Valid top1_acc - Valid top5_acc 0.7554
+[EPOCH TRAIN 26/183] : Train loss 0.0045 - Train top1_acc 0.8018 - Train top5_acc 0.9885
+[EPOCH Valid 26/183] : Valid loss 0.0076 - Valid top1_acc - Valid top5_acc 0.7478
+[EPOCH TRAIN 27/183] : Train loss 0.0044 - Train top1_acc 0.8069 - Train top5_acc 0.9901
+[EPOCH Valid 27/183] : Valid loss 0.0092 - Valid top1_acc - Valid top5_acc 0.7608
+[EPOCH TRAIN 28/183] : Train loss 0.0043 - Train top1_acc 0.8088 - Train top5_acc 0.9895
+[EPOCH Valid 28/183] : Valid loss 0.0103 - Valid top1_acc - Valid top5_acc 0.7454
+[EPOCH TRAIN 29/183] : Train loss 0.0043 - Train top1_acc 0.8116 - Train top5_acc 0.9895
+[EPOCH Valid 29/183] : Valid loss 0.0074 - Valid top1_acc - Valid top5_acc 0.7978
+[EPOCH TRAIN 30/183] : Train loss 0.0042 - Train top1_acc 0.8174 - Train top5_acc 0.9898
+[EPOCH Valid 30/183] : Valid loss 0.0057 - Valid top1_acc - Valid top5_acc 0.8008
+[EPOCH TRAIN 31/183] : Train loss 0.0041 - Train top1_acc 0.8193 - Train top5_acc 0.9904
+[EPOCH Valid 31/183] : Valid loss 0.0114 - Valid top1_acc - Valid top5_acc 0.7282
+[EPOCH TRAIN 32/183] : Train loss 0.0041 - Train top1_acc 0.8208 - Train top5_acc 0.991
+[EPOCH Valid 32/183] : Valid loss 0.0083 - Valid top1_acc - Valid top5_acc 0.7338
+[EPOCH TRAIN 33/183] : Train loss 0.004 - Train top1_acc 0.8241 - Train top5_acc 0.991
+[EPOCH Valid 33/183] : Valid loss 0.0082 - Valid top1_acc - Valid top5_acc 0.742
+[EPOCH TRAIN 34/183] : Train loss 0.004 - Train top1_acc 0.8259 - Train top5_acc 0.9912
+[EPOCH Valid 34/183] : Valid loss 0.0072 - Valid top1_acc - Valid top5_acc 0.7972
+[EPOCH TRAIN 35/183] : Train loss 0.0039 - Train top1_acc 0.828 - Train top5_acc 0.9915
+[EPOCH Valid 35/183] : Valid loss 0.0049 - Valid top1_acc - Valid top5_acc 0.824
+[EPOCH TRAIN 36/183] : Train loss 0.0039 - Train top1_acc 0.8272 - Train top5_acc 0.9911
+[EPOCH Valid 36/183] : Valid loss 0.0103 - Valid top1_acc - Valid top5_acc 0.717
+[EPOCH TRAIN 37/183] : Train loss 0.0038 - Train top1_acc 0.8302 - Train top5_acc 0.9911
+[EPOCH Valid 37/183] : Valid loss 0.0059 - Valid top1_acc - Valid top5_acc 0.7874
+[EPOCH TRAIN 38/183] : Train loss 0.0038 - Train top1_acc 0.8351 - Train top5_acc 0.992
+[EPOCH Valid 38/183] : Valid loss 0.0079 - Valid top1_acc - Valid top5_acc 0.7884
+[EPOCH TRAIN 39/183] : Train loss 0.0037 - Train top1_acc 0.8344 - Train top5_acc 0.992
+[EPOCH Valid 39/183] : Valid loss 0.0092 - Valid top1_acc - Valid top5_acc 0.7482
+[EPOCH TRAIN 40/183] : Train loss 0.0036 - Train top1_acc 0.8387 - Train top5_acc 0.9921
+[EPOCH Valid 40/183] : Valid loss 0.0063 - Valid top1_acc - Valid top5_acc 0.8232
+[EPOCH TRAIN 41/183] : Train loss 0.0037 - Train top1_acc 0.8358 - Train top5_acc 0.9924
+[EPOCH Valid 41/183] : Valid loss 0.0063 - Valid top1_acc - Valid top5_acc 0.772
+[EPOCH TRAIN 42/183] : Train loss 0.0037 - Train top1_acc 0.8379 - Train top5_acc 0.9918
+[EPOCH Valid 42/183] : Valid loss 0.0078 - Valid top1_acc - Valid top5_acc 0.797
+[EPOCH TRAIN 43/183] : Train loss 0.0036 - Train top1_acc 0.843 - Train top5_acc 0.9927
+[EPOCH Valid 43/183] : Valid loss 0.0072 - Valid top1_acc - Valid top5_acc 0.816
+[EPOCH TRAIN 44/183] : Train loss 0.0036 - Train top1_acc 0.8417 - Train top5_acc 0.9926
+[EPOCH Valid 44/183] : Valid loss 0.0059 - Valid top1_acc - Valid top5_acc 0.8124
+[EPOCH TRAIN 45/183] : Train loss 0.0035 - Train top1_acc 0.8431 - Train top5_acc 0.9929
+[EPOCH Valid 45/183] : Valid loss 0.006 - Valid top1_acc - Valid top5_acc 0.8088
+[EPOCH TRAIN 46/183] : Train loss 0.0035 - Train top1_acc 0.8456 - Train top5_acc 0.9926
+[EPOCH Valid 46/183] : Valid loss 0.0058 - Valid top1_acc - Valid top5_acc 0.8276
+[EPOCH TRAIN 47/183] : Train loss 0.0035 - Train top1_acc 0.8488 - Train top5_acc 0.9928
+[EPOCH Valid 47/183] : Valid loss 0.0115 - Valid top1_acc - Valid top5_acc 0.6744
+[EPOCH TRAIN 48/183] : Train loss 0.0035 - Train top1_acc 0.8466 - Train top5_acc 0.9935
+[EPOCH Valid 48/183] : Valid loss 0.0071 - Valid top1_acc - Valid top5_acc 0.775
+[EPOCH TRAIN 49/183] : Train loss 0.0034 - Train top1_acc 0.8488 - Train top5_acc 0.993
+[EPOCH Valid 49/183] : Valid loss 0.0058 - Valid top1_acc - Valid top5_acc 0.7996
+[EPOCH TRAIN 50/183] : Train loss 0.0034 - Train top1_acc 0.85 - Train top5_acc 0.9936
+[EPOCH Valid 50/183] : Valid loss 0.0051 - Valid top1_acc - Valid top5_acc 0.8266
+[EPOCH TRAIN 51/183] : Train loss 0.0034 - Train top1_acc 0.8506 - Train top5_acc 0.994
+[EPOCH Valid 51/183] : Valid loss 0.015 - Valid top1_acc - Valid top5_acc 0.6626
+[EPOCH TRAIN 52/183] : Train loss 0.0034 - Train top1_acc 0.8537 - Train top5_acc 0.9932
+[EPOCH Valid 52/183] : Valid loss 0.0071 - Valid top1_acc - Valid top5_acc 0.8002
+[EPOCH TRAIN 53/183] : Train loss 0.0033 - Train top1_acc 0.853 - Train top5_acc 0.9937
+[EPOCH Valid 53/183] : Valid loss 0.0078 - Valid top1_acc - Valid top5_acc 0.7556
+[EPOCH TRAIN 54/183] : Train loss 0.0033 - Train top1_acc 0.8538 - Train top5_acc 0.9934
+[EPOCH Valid 54/183] : Valid loss 0.0066 - Valid top1_acc - Valid top5_acc 0.7672
+[EPOCH TRAIN 55/183] : Train loss 0.0033 - Train top1_acc 0.8565 - Train top5_acc 0.9936
+[EPOCH Valid 55/183] : Valid loss 0.0067 - Valid top1_acc - Valid top5_acc 0.8284
+[EPOCH TRAIN 56/183] : Train loss 0.0033 - Train top1_acc 0.8548 - Train top5_acc 0.9938
+[EPOCH Valid 56/183] : Valid loss 0.0064 - Valid top1_acc - Valid top5_acc 0.8188
+[EPOCH TRAIN 57/183] : Train loss 0.0032 - Train top1_acc 0.8576 - Train top5_acc 0.994
+[EPOCH Valid 57/183] : Valid loss 0.0084 - Valid top1_acc - Valid top5_acc 0.7714
+[EPOCH TRAIN 58/183] : Train loss 0.0032 - Train top1_acc 0.8606 - Train top5_acc 0.9942
+[EPOCH Valid 58/183] : Valid loss 0.0052 - Valid top1_acc - Valid top5_acc 0.8164
+[EPOCH TRAIN 59/183] : Train loss 0.0032 - Train top1_acc 0.8582 - Train top5_acc 0.994
+[EPOCH Valid 59/183] : Valid loss 0.0054 - Valid top1_acc - Valid top5_acc 0.8148
+[EPOCH TRAIN 60/183] : Train loss 0.0032 - Train top1_acc 0.8574 - Train top5_acc 0.9936
+[EPOCH Valid 60/183] : Valid loss 0.0091 - Valid top1_acc - Valid top5_acc 0.7908
+[EPOCH TRAIN 61/183] : Train loss 0.0031 - Train top1_acc 0.8625 - Train top5_acc 0.9944
+[EPOCH Valid 61/183] : Valid loss 0.0062 - Valid top1_acc - Valid top5_acc 0.7848
+[EPOCH TRAIN 62/183] : Train loss 0.0032 - Train top1_acc 0.8597 - Train top5_acc 0.9938
+[EPOCH Valid 62/183] : Valid loss 0.008 - Valid top1_acc - Valid top5_acc 0.776
+[EPOCH TRAIN 63/183] : Train loss 0.0032 - Train top1_acc 0.8618 - Train top5_acc 0.9944
+[EPOCH Valid 63/183] : Valid loss 0.0052 - Valid top1_acc - Valid top5_acc 0.8324
+[EPOCH TRAIN 64/183] : Train loss 0.0031 - Train top1_acc 0.8644 - Train top5_acc 0.9947
+[EPOCH Valid 64/183] : Valid loss 0.0074 - Valid top1_acc - Valid top5_acc 0.8254
+[EPOCH TRAIN 65/183] : Train loss 0.0031 - Train top1_acc 0.8632 - Train top5_acc 0.995
+[EPOCH Valid 65/183] : Valid loss 0.0069 - Valid top1_acc - Valid top5_acc 0.8304
+[EPOCH TRAIN 66/183] : Train loss 0.003 - Train top1_acc 0.8646 - Train top5_acc 0.995
+[EPOCH Valid 66/183] : Valid loss 0.0055 - Valid top1_acc - Valid top5_acc 0.821
+[EPOCH TRAIN 67/183] : Train loss 0.0031 - Train top1_acc 0.8604 - Train top5_acc 0.9949
+[EPOCH Valid 67/183] : Valid loss 0.0061 - Valid top1_acc - Valid top5_acc 0.8382
+[EPOCH TRAIN 68/183] : Train loss 0.0031 - Train top1_acc 0.8663 - Train top5_acc 0.9942
+[EPOCH Valid 68/183] : Valid loss 0.0061 - Valid top1_acc - Valid top5_acc 0.8268
+[EPOCH TRAIN 69/183] : Train loss 0.0031 - Train top1_acc 0.8632 - Train top5_acc 0.9941
+[EPOCH Valid 69/183] : Valid loss 0.005 - Valid top1_acc - Valid top5_acc 0.834
+[EPOCH TRAIN 70/183] : Train loss 0.003 - Train top1_acc 0.8688 - Train top5_acc 0.9942
+[EPOCH Valid 70/183] : Valid loss 0.0063 - Valid top1_acc - Valid top5_acc 0.82
+[EPOCH TRAIN 71/183] : Train loss 0.003 - Train top1_acc 0.8657 - Train top5_acc 0.9953
+[EPOCH Valid 71/183] : Valid loss 0.0064 - Valid top1_acc - Valid top5_acc 0.7926
+[EPOCH TRAIN 72/183] : Train loss 0.003 - Train top1_acc 0.8681 - Train top5_acc 0.9946
+[EPOCH Valid 72/183] : Valid loss 0.0088 - Valid top1_acc - Valid top5_acc 0.791
+[EPOCH TRAIN 73/183] : Train loss 0.0031 - Train top1_acc 0.8633 - Train top5_acc 0.9948
+[EPOCH Valid 73/183] : Valid loss 0.01 - Valid top1_acc - Valid top5_acc 0.7572
+[EPOCH TRAIN 74/183] : Train loss 0.003 - Train top1_acc 0.8668 - Train top5_acc 0.9951
+[EPOCH Valid 74/183] : Valid loss 0.0047 - Valid top1_acc - Valid top5_acc 0.8372
+[EPOCH TRAIN 75/183] : Train loss 0.003 - Train top1_acc 0.8668 - Train top5_acc 0.9953
+[EPOCH Valid 75/183] : Valid loss 0.0051 - Valid top1_acc - Valid top5_acc 0.8332
+[EPOCH TRAIN 76/183] : Train loss 0.0029 - Train top1_acc 0.8696 - Train top5_acc 0.9953
+[EPOCH Valid 76/183] : Valid loss 0.0073 - Valid top1_acc - Valid top5_acc 0.8006
+[EPOCH TRAIN 77/183] : Train loss 0.003 - Train top1_acc 0.8696 - Train top5_acc 0.995
+[EPOCH Valid 77/183] : Valid loss 0.0049 - Valid top1_acc - Valid top5_acc 0.8404
+[EPOCH TRAIN 78/183] : Train loss 0.0029 - Train top1_acc 0.8717 - Train top5_acc 0.9948
+[EPOCH Valid 78/183] : Valid loss 0.0086 - Valid top1_acc - Valid top5_acc 0.7994
+[EPOCH TRAIN 79/183] : Train loss 0.003 - Train top1_acc 0.8678 - Train top5_acc 0.9953
+[EPOCH Valid 79/183] : Valid loss 0.0063 - Valid top1_acc - Valid top5_acc 0.8138
+[EPOCH TRAIN 80/183] : Train loss 0.0029 - Train top1_acc 0.8717 - Train top5_acc 0.9953
+[EPOCH Valid 80/183] : Valid loss 0.0062 - Valid top1_acc - Valid top5_acc 0.8068
+[EPOCH TRAIN 81/183] : Train loss 0.0029 - Train top1_acc 0.8697 - Train top5_acc 0.9954
+[EPOCH Valid 81/183] : Valid loss 0.0065 - Valid top1_acc - Valid top5_acc 0.8172
+[EPOCH TRAIN 82/183] : Train loss 0.0029 - Train top1_acc 0.8721 - Train top5_acc 0.9952
+[EPOCH Valid 82/183] : Valid loss 0.0062 - Valid top1_acc - Valid top5_acc 0.825
+[EPOCH TRAIN 83/183] : Train loss 0.0028 - Train top1_acc 0.8756 - Train top5_acc 0.9952
+[EPOCH Valid 83/183] : Valid loss 0.0069 - Valid top1_acc - Valid top5_acc 0.8062
+[EPOCH TRAIN 84/183] : Train loss 0.0029 - Train top1_acc 0.8693 - Train top5_acc 0.9949
+[EPOCH Valid 84/183] : Valid loss 0.0056 - Valid top1_acc - Valid top5_acc 0.8118
+[EPOCH TRAIN 85/183] : Train loss 0.0029 - Train top1_acc 0.8732 - Train top5_acc 0.9959
+[EPOCH Valid 85/183] : Valid loss 0.0072 - Valid top1_acc - Valid top5_acc 0.8362
+[EPOCH TRAIN 86/183] : Train loss 0.0029 - Train top1_acc 0.8733 - Train top5_acc 0.9954
+[EPOCH Valid 86/183] : Valid loss 0.0063 - Valid top1_acc - Valid top5_acc 0.816
+[EPOCH TRAIN 87/183] : Train loss 0.0029 - Train top1_acc 0.8739 - Train top5_acc 0.9955
+[EPOCH Valid 87/183] : Valid loss 0.005 - Valid top1_acc - Valid top5_acc 0.8212
+[EPOCH TRAIN 88/183] : Train loss 0.0028 - Train top1_acc 0.875 - Train top5_acc 0.9951
+[EPOCH Valid 88/183] : Valid loss 0.0059 - Valid top1_acc - Valid top5_acc 0.8332
+[EPOCH TRAIN 89/183] : Train loss 0.0028 - Train top1_acc 0.8763 - Train top5_acc 0.995
+[EPOCH Valid 89/183] : Valid loss 0.006 - Valid top1_acc - Valid top5_acc 0.8184
+[EPOCH TRAIN 90/183] : Train loss 0.0028 - Train top1_acc 0.8756 - Train top5_acc 0.9955
+[EPOCH Valid 90/183] : Valid loss 0.0052 - Valid top1_acc - Valid top5_acc 0.8432
+[EPOCH TRAIN 91/183] : Train loss 0.0028 - Train top1_acc 0.8775 - Train top5_acc 0.9955
+[EPOCH Valid 91/183] : Valid loss 0.0049 - Valid top1_acc - Valid top5_acc 0.8668
+[EPOCH TRAIN 92/183] : Train loss 0.0018 - Train top1_acc 0.9194 - Train top5_acc 0.9979
+[EPOCH Valid 92/183] : Valid loss 0.0041 - Valid top1_acc - Valid top5_acc 0.8926
+[EPOCH TRAIN 93/183] : Train loss 0.0016 - Train top1_acc 0.9308 - Train top5_acc 0.9985
+[EPOCH Valid 93/183] : Valid loss 0.0043 - Valid top1_acc - Valid top5_acc 0.8938
+[EPOCH TRAIN 94/183] : Train loss 0.0015 - Train top1_acc 0.9349 - Train top5_acc 0.9985
+[EPOCH Valid 94/183] : Valid loss 0.004 - Valid top1_acc - Valid top5_acc 0.8924
+[EPOCH TRAIN 95/183] : Train loss 0.0014 - Train top1_acc 0.938 - Train top5_acc 0.9988
+[EPOCH Valid 95/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.8918
+[EPOCH TRAIN 96/183] : Train loss 0.0013 - Train top1_acc 0.9419 - Train top5_acc 0.9988
+[EPOCH Valid 96/183] : Valid loss 0.0035 - Valid top1_acc - Valid top5_acc 0.8938
+[EPOCH TRAIN 97/183] : Train loss 0.0013 - Train top1_acc 0.9433 - Train top5_acc 0.9989
+[EPOCH Valid 97/183] : Valid loss 0.0038 - Valid top1_acc - Valid top5_acc 0.8938
+[EPOCH TRAIN 98/183] : Train loss 0.0012 - Train top1_acc 0.9451 - Train top5_acc 0.9988
+[EPOCH Valid 98/183] : Valid loss 0.0035 - Valid top1_acc - Valid top5_acc 0.8952
+[EPOCH TRAIN 99/183] : Train loss 0.0012 - Train top1_acc 0.9464 - Train top5_acc 0.999
+[EPOCH Valid 99/183] : Valid loss 0.0036 - Valid top1_acc - Valid top5_acc 0.897
+[EPOCH TRAIN 100/183] : Train loss 0.0012 - Train top1_acc 0.9485 - Train top5_acc 0.9993
+[EPOCH Valid 100/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.8938
+[EPOCH TRAIN 101/183] : Train loss 0.0012 - Train top1_acc 0.9486 - Train top5_acc 0.9993
+[EPOCH Valid 101/183] : Valid loss 0.0034 - Valid top1_acc - Valid top5_acc 0.9012
+[EPOCH TRAIN 102/183] : Train loss 0.0011 - Train top1_acc 0.9497 - Train top5_acc 0.9992
+[EPOCH Valid 102/183] : Valid loss 0.0032 - Valid top1_acc - Valid top5_acc 0.8956
+[EPOCH TRAIN 103/183] : Train loss 0.0011 - Train top1_acc 0.9513 - Train top5_acc 0.9992
+[EPOCH Valid 103/183] : Valid loss 0.0032 - Valid top1_acc - Valid top5_acc 0.8966
+[EPOCH TRAIN 104/183] : Train loss 0.0011 - Train top1_acc 0.9536 - Train top5_acc 0.9993
+[EPOCH Valid 104/183] : Valid loss 0.003 - Valid top1_acc - Valid top5_acc 0.8966
+[EPOCH TRAIN 105/183] : Train loss 0.001 - Train top1_acc 0.9538 - Train top5_acc 0.9995
+[EPOCH Valid 105/183] : Valid loss 0.003 - Valid top1_acc - Valid top5_acc 0.9002
+[EPOCH TRAIN 106/183] : Train loss 0.001 - Train top1_acc 0.9544 - Train top5_acc 0.9994
+[EPOCH Valid 106/183] : Valid loss 0.0035 - Valid top1_acc - Valid top5_acc 0.897
+[EPOCH TRAIN 107/183] : Train loss 0.001 - Train top1_acc 0.9545 - Train top5_acc 0.9995
+[EPOCH Valid 107/183] : Valid loss 0.0035 - Valid top1_acc - Valid top5_acc 0.898
+[EPOCH TRAIN 108/183] : Train loss 0.001 - Train top1_acc 0.9543 - Train top5_acc 0.9993
+[EPOCH Valid 108/183] : Valid loss 0.0032 - Valid top1_acc - Valid top5_acc 0.8976
+[EPOCH TRAIN 109/183] : Train loss 0.001 - Train top1_acc 0.9573 - Train top5_acc 0.9994
+[EPOCH Valid 109/183] : Valid loss 0.0034 - Valid top1_acc - Valid top5_acc 0.8906
+[EPOCH TRAIN 110/183] : Train loss 0.001 - Train top1_acc 0.9563 - Train top5_acc 0.9991
+[EPOCH Valid 110/183] : Valid loss 0.0035 - Valid top1_acc - Valid top5_acc 0.898
+[EPOCH TRAIN 111/183] : Train loss 0.001 - Train top1_acc 0.9573 - Train top5_acc 0.9996
+[EPOCH Valid 111/183] : Valid loss 0.004 - Valid top1_acc - Valid top5_acc 0.8962
+[EPOCH TRAIN 112/183] : Train loss 0.0009 - Train top1_acc 0.9582 - Train top5_acc 0.9994
+[EPOCH Valid 112/183] : Valid loss 0.0031 - Valid top1_acc - Valid top5_acc 0.899
+[EPOCH TRAIN 113/183] : Train loss 0.0009 - Train top1_acc 0.9596 - Train top5_acc 0.9995
+[EPOCH Valid 113/183] : Valid loss 0.0039 - Valid top1_acc - Valid top5_acc 0.8956
+[EPOCH TRAIN 114/183] : Train loss 0.0009 - Train top1_acc 0.962 - Train top5_acc 0.9995
+[EPOCH Valid 114/183] : Valid loss 0.0033 - Valid top1_acc - Valid top5_acc 0.8998
+[EPOCH TRAIN 115/183] : Train loss 0.0009 - Train top1_acc 0.9601 - Train top5_acc 0.9996
+[EPOCH Valid 115/183] : Valid loss 0.0034 - Valid top1_acc - Valid top5_acc 0.899
+[EPOCH TRAIN 116/183] : Train loss 0.0009 - Train top1_acc 0.9601 - Train top5_acc 0.9995
+[EPOCH Valid 116/183] : Valid loss 0.0034 - Valid top1_acc - Valid top5_acc 0.8982
+[EPOCH TRAIN 117/183] : Train loss 0.0009 - Train top1_acc 0.9612 - Train top5_acc 0.9996
+[EPOCH Valid 117/183] : Valid loss 0.0036 - Valid top1_acc - Valid top5_acc 0.9022
+[EPOCH TRAIN 118/183] : Train loss 0.0008 - Train top1_acc 0.9634 - Train top5_acc 0.9996
+[EPOCH Valid 118/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.8946
+[EPOCH TRAIN 119/183] : Train loss 0.0008 - Train top1_acc 0.9631 - Train top5_acc 0.9996
+[EPOCH Valid 119/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.8878
+[EPOCH TRAIN 120/183] : Train loss 0.0008 - Train top1_acc 0.964 - Train top5_acc 0.9997
+[EPOCH Valid 120/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.8928
+[EPOCH TRAIN 121/183] : Train loss 0.0008 - Train top1_acc 0.9633 - Train top5_acc 0.9996
+[EPOCH Valid 121/183] : Valid loss 0.0035 - Valid top1_acc - Valid top5_acc 0.894
+[EPOCH TRAIN 122/183] : Train loss 0.0008 - Train top1_acc 0.9635 - Train top5_acc 0.9996
+[EPOCH Valid 122/183] : Valid loss 0.0043 - Valid top1_acc - Valid top5_acc 0.896
+[EPOCH TRAIN 123/183] : Train loss 0.0008 - Train top1_acc 0.9639 - Train top5_acc 0.9997
+[EPOCH Valid 123/183] : Valid loss 0.004 - Valid top1_acc - Valid top5_acc 0.8964
+[EPOCH TRAIN 124/183] : Train loss 0.0008 - Train top1_acc 0.9643 - Train top5_acc 0.9997
+[EPOCH Valid 124/183] : Valid loss 0.0042 - Valid top1_acc - Valid top5_acc 0.8978
+[EPOCH TRAIN 125/183] : Train loss 0.0007 - Train top1_acc 0.9666 - Train top5_acc 0.9997
+[EPOCH Valid 125/183] : Valid loss 0.0041 - Valid top1_acc - Valid top5_acc 0.8952
+[EPOCH TRAIN 126/183] : Train loss 0.0008 - Train top1_acc 0.9658 - Train top5_acc 0.9996
+[EPOCH Valid 126/183] : Valid loss 0.004 - Valid top1_acc - Valid top5_acc 0.8942
+[EPOCH TRAIN 127/183] : Train loss 0.0007 - Train top1_acc 0.9672 - Train top5_acc 0.9998
+[EPOCH Valid 127/183] : Valid loss 0.0052 - Valid top1_acc - Valid top5_acc 0.894
+[EPOCH TRAIN 128/183] : Train loss 0.0008 - Train top1_acc 0.9663 - Train top5_acc 0.9996
+[EPOCH Valid 128/183] : Valid loss 0.0039 - Valid top1_acc - Valid top5_acc 0.8902
+[EPOCH TRAIN 129/183] : Train loss 0.0007 - Train top1_acc 0.9669 - Train top5_acc 0.9998
+[EPOCH Valid 129/183] : Valid loss 0.0036 - Valid top1_acc - Valid top5_acc 0.8996
+[EPOCH TRAIN 130/183] : Train loss 0.0007 - Train top1_acc 0.9675 - Train top5_acc 0.9998
+[EPOCH Valid 130/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.8952
+[EPOCH TRAIN 131/183] : Train loss 0.0007 - Train top1_acc 0.9687 - Train top5_acc 0.9999
+[EPOCH Valid 131/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.8962
+[EPOCH TRAIN 132/183] : Train loss 0.0008 - Train top1_acc 0.9668 - Train top5_acc 0.9998
+[EPOCH Valid 132/183] : Valid loss 0.0044 - Valid top1_acc - Valid top5_acc 0.8984
+[EPOCH TRAIN 133/183] : Train loss 0.0007 - Train top1_acc 0.9684 - Train top5_acc 0.9997
+[EPOCH Valid 133/183] : Valid loss 0.004 - Valid top1_acc - Valid top5_acc 0.9
+[EPOCH TRAIN 134/183] : Train loss 0.0007 - Train top1_acc 0.9697 - Train top5_acc 0.9997
+[EPOCH Valid 134/183] : Valid loss 0.004 - Valid top1_acc - Valid top5_acc 0.8948
+[EPOCH TRAIN 135/183] : Train loss 0.0007 - Train top1_acc 0.9678 - Train top5_acc 0.9996
+[EPOCH Valid 135/183] : Valid loss 0.0046 - Valid top1_acc - Valid top5_acc 0.8974
+[EPOCH TRAIN 136/183] : Train loss 0.0007 - Train top1_acc 0.9696 - Train top5_acc 0.9998
+[EPOCH Valid 136/183] : Valid loss 0.0042 - Valid top1_acc - Valid top5_acc 0.8932
+[EPOCH TRAIN 137/183] : Train loss 0.0006 - Train top1_acc 0.9734 - Train top5_acc 0.9998
+[EPOCH Valid 137/183] : Valid loss 0.0043 - Valid top1_acc - Valid top5_acc 0.8996
+[EPOCH TRAIN 138/183] : Train loss 0.0005 - Train top1_acc 0.9774 - Train top5_acc 0.9999
+[EPOCH Valid 138/183] : Valid loss 0.004 - Valid top1_acc - Valid top5_acc 0.8994
+[EPOCH TRAIN 139/183] : Train loss 0.0005 - Train top1_acc 0.9782 - Train top5_acc 0.9999
+[EPOCH Valid 139/183] : Valid loss 0.004 - Valid top1_acc - Valid top5_acc 0.8998
+[EPOCH TRAIN 140/183] : Train loss 0.0005 - Train top1_acc 0.9796 - Train top5_acc 0.9998
+[EPOCH Valid 140/183] : Valid loss 0.004 - Valid top1_acc - Valid top5_acc 0.8998
+[EPOCH TRAIN 141/183] : Train loss 0.0005 - Train top1_acc 0.9793 - Train top5_acc 0.9998
+[EPOCH Valid 141/183] : Valid loss 0.0038 - Valid top1_acc - Valid top5_acc 0.9004
+[EPOCH TRAIN 142/183] : Train loss 0.0005 - Train top1_acc 0.9784 - Train top5_acc 0.9998
+[EPOCH Valid 142/183] : Valid loss 0.0038 - Valid top1_acc - Valid top5_acc 0.8992
+[EPOCH TRAIN 143/183] : Train loss 0.0005 - Train top1_acc 0.98 - Train top5_acc 0.9998
+[EPOCH Valid 143/183] : Valid loss 0.0039 - Valid top1_acc - Valid top5_acc 0.8988
+[EPOCH TRAIN 144/183] : Train loss 0.0005 - Train top1_acc 0.9794 - Train top5_acc 0.9998
+[EPOCH Valid 144/183] : Valid loss 0.0039 - Valid top1_acc - Valid top5_acc 0.9
+[EPOCH TRAIN 145/183] : Train loss 0.0004 - Train top1_acc 0.9814 - Train top5_acc 0.9999
+[EPOCH Valid 145/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.9018
+[EPOCH TRAIN 146/183] : Train loss 0.0004 - Train top1_acc 0.9812 - Train top5_acc 0.9999
+[EPOCH Valid 146/183] : Valid loss 0.0036 - Valid top1_acc - Valid top5_acc 0.8996
+[EPOCH TRAIN 147/183] : Train loss 0.0004 - Train top1_acc 0.9811 - Train top5_acc 0.9998
+[EPOCH Valid 147/183] : Valid loss 0.0038 - Valid top1_acc - Valid top5_acc 0.8996
+[EPOCH TRAIN 148/183] : Train loss 0.0004 - Train top1_acc 0.981 - Train top5_acc 0.9999
+[EPOCH Valid 148/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.9002
+[EPOCH TRAIN 149/183] : Train loss 0.0004 - Train top1_acc 0.9815 - Train top5_acc 1.0
+[EPOCH Valid 149/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.901
+[EPOCH TRAIN 150/183] : Train loss 0.0004 - Train top1_acc 0.9821 - Train top5_acc 0.9999
+[EPOCH Valid 150/183] : Valid loss 0.0038 - Valid top1_acc - Valid top5_acc 0.9026
+[EPOCH TRAIN 151/183] : Train loss 0.0004 - Train top1_acc 0.9802 - Train top5_acc 0.9999
+[EPOCH Valid 151/183] : Valid loss 0.0039 - Valid top1_acc - Valid top5_acc 0.9012
+[EPOCH TRAIN 152/183] : Train loss 0.0004 - Train top1_acc 0.9817 - Train top5_acc 0.9999
+[EPOCH Valid 152/183] : Valid loss 0.004 - Valid top1_acc - Valid top5_acc 0.899
+[EPOCH TRAIN 153/183] : Train loss 0.0004 - Train top1_acc 0.9805 - Train top5_acc 0.9999
+[EPOCH Valid 153/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.9008
+[EPOCH TRAIN 154/183] : Train loss 0.0004 - Train top1_acc 0.9822 - Train top5_acc 0.9999
+[EPOCH Valid 154/183] : Valid loss 0.0039 - Valid top1_acc - Valid top5_acc 0.9006
+[EPOCH TRAIN 155/183] : Train loss 0.0004 - Train top1_acc 0.9823 - Train top5_acc 0.9999
+[EPOCH Valid 155/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.9018
+[EPOCH TRAIN 156/183] : Train loss 0.0004 - Train top1_acc 0.9831 - Train top5_acc 0.9999
+[EPOCH Valid 156/183] : Valid loss 0.0038 - Valid top1_acc - Valid top5_acc 0.9
+[EPOCH TRAIN 157/183] : Train loss 0.0004 - Train top1_acc 0.9824 - Train top5_acc 0.9998
+[EPOCH Valid 157/183] : Valid loss 0.0038 - Valid top1_acc - Valid top5_acc 0.9014
+[EPOCH TRAIN 158/183] : Train loss 0.0004 - Train top1_acc 0.983 - Train top5_acc 0.9999
+[EPOCH Valid 158/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.9008
+[EPOCH TRAIN 159/183] : Train loss 0.0004 - Train top1_acc 0.9835 - Train top5_acc 0.9999
+[EPOCH Valid 159/183] : Valid loss 0.0038 - Valid top1_acc - Valid top5_acc 0.9
+[EPOCH TRAIN 160/183] : Train loss 0.0004 - Train top1_acc 0.9831 - Train top5_acc 1.0
+[EPOCH Valid 160/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.901
+[EPOCH TRAIN 161/183] : Train loss 0.0004 - Train top1_acc 0.9823 - Train top5_acc 1.0
+[EPOCH Valid 161/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.9012
+[EPOCH TRAIN 162/183] : Train loss 0.0004 - Train top1_acc 0.9825 - Train top5_acc 0.9999
+[EPOCH Valid 162/183] : Valid loss 0.0039 - Valid top1_acc - Valid top5_acc 0.9
+[EPOCH TRAIN 163/183] : Train loss 0.0004 - Train top1_acc 0.9837 - Train top5_acc 1.0
+[EPOCH Valid 163/183] : Valid loss 0.0038 - Valid top1_acc - Valid top5_acc 0.8986
+[EPOCH TRAIN 164/183] : Train loss 0.0004 - Train top1_acc 0.983 - Train top5_acc 0.9999
+[EPOCH Valid 164/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.8998
+[EPOCH TRAIN 165/183] : Train loss 0.0004 - Train top1_acc 0.9834 - Train top5_acc 0.9999
+[EPOCH Valid 165/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.9
+[EPOCH TRAIN 166/183] : Train loss 0.0004 - Train top1_acc 0.9844 - Train top5_acc 0.9999
+[EPOCH Valid 166/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.9002
+[EPOCH TRAIN 167/183] : Train loss 0.0004 - Train top1_acc 0.9838 - Train top5_acc 0.9999
+[EPOCH Valid 167/183] : Valid loss 0.004 - Valid top1_acc - Valid top5_acc 0.9014
+[EPOCH TRAIN 168/183] : Train loss 0.0004 - Train top1_acc 0.9827 - Train top5_acc 0.9999
+[EPOCH Valid 168/183] : Valid loss 0.0038 - Valid top1_acc - Valid top5_acc 0.9034
+[EPOCH TRAIN 169/183] : Train loss 0.0004 - Train top1_acc 0.9834 - Train top5_acc 0.9999
+[EPOCH Valid 169/183] : Valid loss 0.0039 - Valid top1_acc - Valid top5_acc 0.8992
+[EPOCH TRAIN 170/183] : Train loss 0.0004 - Train top1_acc 0.9836 - Train top5_acc 1.0
+[EPOCH Valid 170/183] : Valid loss 0.0039 - Valid top1_acc - Valid top5_acc 0.8988
+[EPOCH TRAIN 171/183] : Train loss 0.0004 - Train top1_acc 0.9822 - Train top5_acc 0.9999
+[EPOCH Valid 171/183] : Valid loss 0.0038 - Valid top1_acc - Valid top5_acc 0.901
+[EPOCH TRAIN 172/183] : Train loss 0.0004 - Train top1_acc 0.9845 - Train top5_acc 0.9999
+[EPOCH Valid 172/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.9008
+[EPOCH TRAIN 173/183] : Train loss 0.0004 - Train top1_acc 0.9851 - Train top5_acc 0.9999
+[EPOCH Valid 173/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.9006
+[EPOCH TRAIN 174/183] : Train loss 0.0004 - Train top1_acc 0.9836 - Train top5_acc 1.0
+[EPOCH Valid 174/183] : Valid loss 0.0039 - Valid top1_acc - Valid top5_acc 0.9014
+[EPOCH TRAIN 175/183] : Train loss 0.0004 - Train top1_acc 0.9837 - Train top5_acc 0.9999
+[EPOCH Valid 175/183] : Valid loss 0.0037 - Valid top1_acc - Valid top5_acc 0.9014
+[EPOCH TRAIN 176/183] : Train loss 0.0004 - Train top1_acc 0.9845 - Train top5_acc 0.9999
+[EPOCH Valid 176/183] : Valid loss 0.004 - Valid top1_acc - Valid top5_acc 0.9022
+[EPOCH TRAIN 177/183] : Train loss 0.0004 - Train top1_acc 0.984 - Train top5_acc 0.9999
+[EPOCH Valid 177/183] : Valid loss 0.0039 - Valid top1_acc - Valid top5_acc 0.8996
+[EPOCH TRAIN 178/183] : Train loss 0.0004 - Train top1_acc 0.9844 - Train top5_acc 1.0
+[EPOCH Valid 178/183] : Valid loss 0.004 - Valid top1_acc - Valid top5_acc 0.8982
+[EPOCH TRAIN 179/183] : Train loss 0.0004 - Train top1_acc 0.9851 - Train top5_acc 0.9999
+[EPOCH Valid 179/183] : Valid loss 0.004 - Valid top1_acc - Valid top5_acc 0.8974
+[EPOCH TRAIN 180/183] : Train loss 0.0004 - Train top1_acc 0.9844 - Train top5_acc 1.0
+[EPOCH Valid 180/183] : Valid loss 0.004 - Valid top1_acc - Valid top5_acc 0.899
+[EPOCH TRAIN 181/183] : Train loss 0.0004 - Train top1_acc 0.9846 - Train top5_acc 0.9999
+[EPOCH Valid 181/183] : Valid loss 0.004 - Valid top1_acc - Valid top5_acc 0.8998
+[EPOCH TRAIN 182/183] : Train loss 0.0004 - Train top1_acc 0.9843 - Train top5_acc 0.9999
+[EPOCH Valid 182/183] : Valid loss 0.0042 - Valid top1_acc - Valid top5_acc 0.8998
+[EPOCH TRAIN 183/183] : Train loss 0.0004 - Train top1_acc 0.9846 - Train top5_acc 0.9999
+[EPOCH Valid 183/183] : Valid loss 0.0041 - Valid top1_acc - Valid top5_acc 0.8982

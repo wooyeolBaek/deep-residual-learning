@@ -1,0 +1,6 @@
+{
+  "top1_acc": 89.59,
+  "top5_acc": 99.67,
+  "top1_error": 10.41,
+  "top5_error": 0.33
+}
