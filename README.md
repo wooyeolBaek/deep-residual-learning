@@ -11,6 +11,7 @@
 - Dimension Expansion
     1. identity mapping with zero pad (Option A.): no extra params
     2. projection mapping(Option B.): higher performance
+- [Pretrained Models](https://github.com/wooyeolBaek/deep-residual-learning/tree/main/trained_models)
 - Objectives:
     1. `ResNet Implementation`
     2. `Solving the Degradation Problem`
