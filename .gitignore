@@ -5,6 +5,5 @@ wandb
 data
 __pycache__
 .DS**
-trained_models
 **copy**
 **.jpeg

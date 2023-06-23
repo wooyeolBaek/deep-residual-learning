@@ -1,160 +1,614 @@
 # pytorch-implementation-of-deep-residual-learning
 
 
-
 ## Summary
-[Deep Residual Learning for Image Recognition Review](https://www.notion.so/Deep-Residual-Learning-for-Image-Recognition-b5df2d5c18ad47cc9f5003f1037652ff)
-    
+- Dataset: CIPHAR10
+- Models: ResNet20, ResNet32, ResNet44, ResNet56, ResNet110
+    - `Easier Optimization`(optimize layers to each input)
+    - `Deeper Network`(solve degradation problem)
+    - `Lower Complexity`
+- Metric: Top1-error
+- Dimension Expansion
+    1. identity mapping with zero pad (Option A.): no extra params
+    2. projection mapping(Option B.): higher performance
+- Objectives:
+    1. `ResNet Implementation`
+    2. `Solving the Degradation Problem`
+    3. `Reproducing the Paper's Performance`
 
-### residual learning의 장점
 
-- 최적화 쉬움
-- 상당히 깊은(152-layers) 모델에서 accuracy 상승(깊은 모델의 학습 쉽게 해줌)
-- 파라미터를 추가하지 않는 identity mapping으로, 낮은 complexity 유지
+---
 
-### identity mapping을 추가해 최적화를 단순화
+## Implementation
+Use Zero-pad for Identity mapping(option A.) to match #params of ResNet and PlainNet
 
-- 기존: $x \rightarrow H(x)$로 알 수 없는 값인 $H(x)=?$를 최적화해 어려움
-- identity mapping을 추가한 새로운 방식: $x \rightarrow F(x)=H(x)-x$는 $H(x)=x$로 최적화해 목적이 명확해 학습이 쉬워짐
-    - identity mapping이 최적이라는 의미는 아님
-    - 즉, identity mapping을 추가(good reformulation)를 통한 preconditioning으로 최적화를 단순화
+<details>
+<summary>ResNet-20</summary>
 
-### 두 개의 3x3 Conv 연산에서 차원이 증가하는 경우 사용한 방법
+```
+====================================================================================================<br>
+Layer (type:depth-idx)                             Output Shape              Param #
+====================================================================================================<br>
+ResNet                                             [128, 10]                 --<br>
+├─Conv1: 1-1                                       [128, 16, 32, 32]         --
+│    └─Conv2d: 2-1                                 [128, 16, 32, 32]         448
+│    └─BatchNorm2d: 2-2                            [128, 16, 32, 32]         32
+│    └─ReLU: 2-3                                   [128, 16, 32, 32]         --
+├─Conv2: 1-2                                       [128, 16, 32, 32]         --
+│    └─Sequential: 2-4                             [128, 16, 32, 32]         --
+│    │    └─ResBlock: 3-1                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-2                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-3                          [128, 16, 32, 32]         4,704
+├─Conv3: 1-3                                       [128, 32, 16, 16]         --
+│    └─Sequential: 2-5                             [128, 32, 16, 16]         --
+│    │    └─ResBlock: 3-4                          [128, 32, 16, 16]         14,016
+│    │    └─ResBlock: 3-5                          [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-6                          [128, 32, 16, 16]         18,624
+├─Conv4: 1-4                                       [128, 64, 8, 8]           --
+│    └─Sequential: 2-6                             [128, 64, 8, 8]           --
+│    │    └─ResBlock: 3-7                          [128, 64, 8, 8]           55,680
+│    │    └─ResBlock: 3-8                          [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-9                          [128, 64, 8, 8]           74,112
+├─FC: 1-5                                          [128, 10]                 --
+│    └─AdaptiveAvgPool2d: 2-7                      [128, 64, 1, 1]           --
+│    └─Linear: 2-8                                 [128, 10]                 650
+====================================================================================================
+Total params: 270,410
+Trainable params: 270,410
+Non-trainable params: 0
+Total mult-adds (G): 5.21
+====================================================================================================
+Input size (MB): 1.57
+Forward/backward pass size (MB): 385.89
+Params size (MB): 1.08
+Estimated Total Size (MB): 388.54
+====================================================================================================
+```
 
-1. `identity mapping`: 복잡도를 증가시키지 않음
-2. `projection mapping`: 비교적 높은 성능
+</details>
 
-### Plain net 구현
 
-1. 동일한 크기의 output feature map을 위해 layer마다 같은 수의 filter(채널)를 갖음
-2. feature map의 크기가 반으로 줄었을 때, filter의 개수를 두 배로 늘려 layer별 시간 복잡도 유지
 
-### ResNet 구현
 
-1. input과 output의 차원이 같은 경우, identity shortcut만 적용
-2. input과 output의 차원이 다른 경우(두 가지 방법): 1) `zero-pad` 적용 후, `identity shortcut` 적용, 2) 1x1 conv로 `projection shortcut` 적용
+<details>
+<summary>ResNet-32</summary>
 
-***
+```
+====================================================================================================
+Layer (type:depth-idx)                             Output Shape              Param #
+====================================================================================================
+ResNet                                             [128, 10]                 --
+├─Conv1: 1-1                                       [128, 16, 32, 32]         --
+│    └─Conv2d: 2-1                                 [128, 16, 32, 32]         448
+│    └─BatchNorm2d: 2-2                            [128, 16, 32, 32]         32
+│    └─ReLU: 2-3                                   [128, 16, 32, 32]         --
+├─Conv2: 1-2                                       [128, 16, 32, 32]         --
+│    └─Sequential: 2-4                             [128, 16, 32, 32]         --
+│    │    └─ResBlock: 3-1                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-2                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-3                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-4                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-5                          [128, 16, 32, 32]         4,704
+├─Conv3: 1-3                                       [128, 32, 16, 16]         --
+│    └─Sequential: 2-5                             [128, 32, 16, 16]         --
+│    │    └─ResBlock: 3-6                          [128, 32, 16, 16]         14,016
+│    │    └─ResBlock: 3-7                          [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-8                          [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-9                          [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-10                         [128, 32, 16, 16]         18,624
+├─Conv4: 1-4                                       [128, 64, 8, 8]           --
+│    └─Sequential: 2-6                             [128, 64, 8, 8]           --
+│    │    └─ResBlock: 3-11                         [128, 64, 8, 8]           55,680
+│    │    └─ResBlock: 3-12                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-13                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-14                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-15                         [128, 64, 8, 8]           74,112
+├─FC: 1-5                                          [128, 10]                 --
+│    └─AdaptiveAvgPool2d: 2-7                      [128, 64, 1, 1]           --
+│    └─Linear: 2-8                                 [128, 10]                 650
+====================================================================================================
+Total params: 465,290
+Trainable params: 465,290
+Non-trainable params: 0
+Total mult-adds (G): 8.85
+====================================================================================================
+Input size (MB): 1.57
+Forward/backward pass size (MB): 620.77
+Params size (MB): 1.86
+Estimated Total Size (MB): 624.20
+====================================================================================================
+```
 
-## Experiment 1.
+</details>
 
-동일한 parameter 개수에서 ResNet과 Plain Net의 깊이에 따른 Top1-error의 변화
 
-- `Degradation` 문제: network가 깊어질수록, train/valid error 모두 증가하는 현상(Plain net에서 발생)
 
-#### 논문의 Figure 6.
 
-<img src="assets/1-Figure6.png">
+<details>
+<summary>ResNet-44</summary>
 
-#### Results
+```
+====================================================================================================
+Layer (type:depth-idx)                             Output Shape              Param #
+====================================================================================================
+ResNet                                             [128, 10]                 --
+├─Conv1: 1-1                                       [128, 16, 32, 32]         --
+│    └─Conv2d: 2-1                                 [128, 16, 32, 32]         448
+│    └─BatchNorm2d: 2-2                            [128, 16, 32, 32]         32
+│    └─ReLU: 2-3                                   [128, 16, 32, 32]         --
+├─Conv2: 1-2                                       [128, 16, 32, 32]         --
+│    └─Sequential: 2-4                             [128, 16, 32, 32]         --
+│    │    └─ResBlock: 3-1                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-2                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-3                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-4                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-5                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-6                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-7                          [128, 16, 32, 32]         4,704
+├─Conv3: 1-3                                       [128, 32, 16, 16]         --
+│    └─Sequential: 2-5                             [128, 32, 16, 16]         --
+│    │    └─ResBlock: 3-8                          [128, 32, 16, 16]         14,016
+│    │    └─ResBlock: 3-9                          [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-10                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-11                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-12                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-13                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-14                         [128, 32, 16, 16]         18,624
+├─Conv4: 1-4                                       [128, 64, 8, 8]           --
+│    └─Sequential: 2-6                             [128, 64, 8, 8]           --
+│    │    └─ResBlock: 3-15                         [128, 64, 8, 8]           55,680
+│    │    └─ResBlock: 3-16                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-17                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-18                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-19                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-20                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-21                         [128, 64, 8, 8]           74,112
+├─FC: 1-5                                          [128, 10]                 --
+│    └─AdaptiveAvgPool2d: 2-7                      [128, 64, 1, 1]           --
+│    └─Linear: 2-8                                 [128, 10]                 650
+====================================================================================================
+Total params: 660,170
+Trainable params: 660,170
+Non-trainable params: 0
+Total mult-adds (G): 12.49
+====================================================================================================
+Input size (MB): 1.57
+Forward/backward pass size (MB): 855.65
+Params size (MB): 2.64
+Estimated Total Size (MB): 859.86
+====================================================================================================
+```
+
+</details>
+
+
+
+
+<details>
+<summary>ResNet-56</summary>
+
+```
+====================================================================================================
+Layer (type:depth-idx)                             Output Shape              Param #
+====================================================================================================
+ResNet                                             [128, 10]                 --
+├─Conv1: 1-1                                       [128, 16, 32, 32]         --
+│    └─Conv2d: 2-1                                 [128, 16, 32, 32]         448
+│    └─BatchNorm2d: 2-2                            [128, 16, 32, 32]         32
+│    └─ReLU: 2-3                                   [128, 16, 32, 32]         --
+├─Conv2: 1-2                                       [128, 16, 32, 32]         --
+│    └─Sequential: 2-4                             [128, 16, 32, 32]         --
+│    │    └─ResBlock: 3-1                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-2                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-3                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-4                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-5                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-6                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-7                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-8                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-9                          [128, 16, 32, 32]         4,704
+├─Conv3: 1-3                                       [128, 32, 16, 16]         --
+│    └─Sequential: 2-5                             [128, 32, 16, 16]         --
+│    │    └─ResBlock: 3-10                         [128, 32, 16, 16]         14,016
+│    │    └─ResBlock: 3-11                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-12                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-13                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-14                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-15                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-16                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-17                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-18                         [128, 32, 16, 16]         18,624
+├─Conv4: 1-4                                       [128, 64, 8, 8]           --
+│    └─Sequential: 2-6                             [128, 64, 8, 8]           --
+│    │    └─ResBlock: 3-19                         [128, 64, 8, 8]           55,680
+│    │    └─ResBlock: 3-20                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-21                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-22                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-23                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-24                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-25                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-26                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-27                         [128, 64, 8, 8]           74,112
+├─FC: 1-5                                          [128, 10]                 --
+│    └─AdaptiveAvgPool2d: 2-7                      [128, 64, 1, 1]           --
+│    └─Linear: 2-8                                 [128, 10]                 650
+====================================================================================================
+Total params: 855,050
+Trainable params: 855,050
+Non-trainable params: 0
+Total mult-adds (G): 16.13
+====================================================================================================
+Input size (MB): 1.57
+Forward/backward pass size (MB): 1090.53
+Params size (MB): 3.42
+Estimated Total Size (MB): 1095.52
+====================================================================================================
+```
+
+</details>
+
+
+
+
+
+<details>
+<summary>ResNet-110</summary>
+
+```
+====================================================================================================
+Layer (type:depth-idx)                             Output Shape              Param #
+====================================================================================================
+ResNet                                             [128, 10]                 --
+├─Conv1: 1-1                                       [128, 16, 32, 32]         --
+│    └─Conv2d: 2-1                                 [128, 16, 32, 32]         448
+│    └─BatchNorm2d: 2-2                            [128, 16, 32, 32]         32
+│    └─ReLU: 2-3                                   [128, 16, 32, 32]         --
+├─Conv2: 1-2                                       [128, 16, 32, 32]         --
+│    └─Sequential: 2-4                             [128, 16, 32, 32]         --
+│    │    └─ResBlock: 3-1                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-2                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-3                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-4                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-5                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-6                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-7                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-8                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-9                          [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-10                         [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-11                         [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-12                         [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-13                         [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-14                         [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-15                         [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-16                         [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-17                         [128, 16, 32, 32]         4,704
+│    │    └─ResBlock: 3-18                         [128, 16, 32, 32]         4,704
+├─Conv3: 1-3                                       [128, 32, 16, 16]         --
+│    └─Sequential: 2-5                             [128, 32, 16, 16]         --
+│    │    └─ResBlock: 3-19                         [128, 32, 16, 16]         14,016
+│    │    └─ResBlock: 3-20                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-21                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-22                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-23                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-24                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-25                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-26                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-27                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-28                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-29                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-30                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-31                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-32                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-33                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-34                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-35                         [128, 32, 16, 16]         18,624
+│    │    └─ResBlock: 3-36                         [128, 32, 16, 16]         18,624
+├─Conv4: 1-4                                       [128, 64, 8, 8]           --
+│    └─Sequential: 2-6                             [128, 64, 8, 8]           --
+│    │    └─ResBlock: 3-37                         [128, 64, 8, 8]           55,680
+│    │    └─ResBlock: 3-38                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-39                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-40                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-41                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-42                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-43                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-44                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-45                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-46                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-47                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-48                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-49                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-50                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-51                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-52                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-53                         [128, 64, 8, 8]           74,112
+│    │    └─ResBlock: 3-54                         [128, 64, 8, 8]           74,112
+├─FC: 1-5                                          [128, 10]                 --
+│    └─AdaptiveAvgPool2d: 2-7                      [128, 64, 1, 1]           --
+│    └─Linear: 2-8                                 [128, 10]                 650
+====================================================================================================
+Total params: 1,732,010
+Trainable params: 1,732,010
+Non-trainable params: 0
+Total mult-adds (G): 32.50
+====================================================================================================
+Input size (MB): 1.57
+Forward/backward pass size (MB): 2147.49
+Params size (MB): 6.93
+Estimated Total Size (MB): 2155.99
+====================================================================================================
+```
+
+</details>
+
+
+
+
+<details>
+<summary>PlainNet-20</summary>
+
+```
+===============================================================================================
+Layer (type:depth-idx)                        Output Shape              Param #
+===============================================================================================
+ResNet                                        [128, 10]                 --
+├─Conv1: 1-1                                  [128, 16, 32, 32]         --
+│    └─Conv2d: 2-1                            [128, 16, 32, 32]         448
+│    └─BatchNorm2d: 2-2                       [128, 16, 32, 32]         32
+│    └─ReLU: 2-3                              [128, 16, 32, 32]         --
+├─Conv2: 1-2                                  [128, 16, 32, 32]         --
+│    └─Sequential: 2-4                        [128, 16, 32, 32]         --
+│    │    └─PlainBlock: 3-1                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-2                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-3                   [128, 16, 32, 32]         4,704
+├─Conv3: 1-3                                  [128, 32, 16, 16]         --
+│    └─Sequential: 2-5                        [128, 32, 16, 16]         --
+│    │    └─PlainBlock: 3-4                   [128, 32, 16, 16]         14,016
+│    │    └─PlainBlock: 3-5                   [128, 32, 16, 16]         18,624
+│    │    └─PlainBlock: 3-6                   [128, 32, 16, 16]         18,624
+├─Conv4: 1-4                                  [128, 64, 8, 8]           --
+│    └─Sequential: 2-6                        [128, 64, 8, 8]           --
+│    │    └─PlainBlock: 3-7                   [128, 64, 8, 8]           55,680
+│    │    └─PlainBlock: 3-8                   [128, 64, 8, 8]           74,112
+│    │    └─PlainBlock: 3-9                   [128, 64, 8, 8]           74,112
+├─FC: 1-5                                     [128, 10]                 --
+│    └─AdaptiveAvgPool2d: 2-7                 [128, 64, 1, 1]           --
+│    └─Linear: 2-8                            [128, 10]                 650
+===============================================================================================
+Total params: 270,410
+Trainable params: 270,410
+Non-trainable params: 0
+Total mult-adds (G): 5.21
+===============================================================================================
+Input size (MB): 1.57
+Forward/backward pass size (MB): 385.89
+Params size (MB): 1.08
+Estimated Total Size (MB): 388.54
+===============================================================================================
+```
+
+</details>
+
+
+
+
+
+<details>
+<summary>PlainNet-32</summary>
+
+```
+===============================================================================================
+Layer (type:depth-idx)                        Output Shape              Param #
+===============================================================================================
+ResNet                                        [128, 10]                 --
+├─Conv1: 1-1                                  [128, 16, 32, 32]         --
+│    └─Conv2d: 2-1                            [128, 16, 32, 32]         448
+│    └─BatchNorm2d: 2-2                       [128, 16, 32, 32]         32
+│    └─ReLU: 2-3                              [128, 16, 32, 32]         --
+├─Conv2: 1-2                                  [128, 16, 32, 32]         --
+│    └─Sequential: 2-4                        [128, 16, 32, 32]         --
+│    │    └─PlainBlock: 3-1                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-2                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-3                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-4                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-5                   [128, 16, 32, 32]         4,704
+├─Conv3: 1-3                                  [128, 32, 16, 16]         --
+│    └─Sequential: 2-5                        [128, 32, 16, 16]         --
+│    │    └─PlainBlock: 3-6                   [128, 32, 16, 16]         14,016
+│    │    └─PlainBlock: 3-7                   [128, 32, 16, 16]         18,624
+│    │    └─PlainBlock: 3-8                   [128, 32, 16, 16]         18,624
+│    │    └─PlainBlock: 3-9                   [128, 32, 16, 16]         18,624
+│    │    └─PlainBlock: 3-10                  [128, 32, 16, 16]         18,624
+├─Conv4: 1-4                                  [128, 64, 8, 8]           --
+│    └─Sequential: 2-6                        [128, 64, 8, 8]           --
+│    │    └─PlainBlock: 3-11                  [128, 64, 8, 8]           55,680
+│    │    └─PlainBlock: 3-12                  [128, 64, 8, 8]           74,112
+│    │    └─PlainBlock: 3-13                  [128, 64, 8, 8]           74,112
+│    │    └─PlainBlock: 3-14                  [128, 64, 8, 8]           74,112
+│    │    └─PlainBlock: 3-15                  [128, 64, 8, 8]           74,112
+├─FC: 1-5                                     [128, 10]                 --
+│    └─AdaptiveAvgPool2d: 2-7                 [128, 64, 1, 1]           --
+│    └─Linear: 2-8                            [128, 10]                 650
+===============================================================================================
+Total params: 465,290
+Trainable params: 465,290
+Non-trainable params: 0
+Total mult-adds (G): 8.85
+===============================================================================================
+Input size (MB): 1.57
+Forward/backward pass size (MB): 620.77
+Params size (MB): 1.86
+Estimated Total Size (MB): 624.20
+===============================================================================================
+```
+
+</details>
+
+
+
+
+
+<details>
+<summary>PlainNet-44</summary>
+
+```
+===============================================================================================
+Layer (type:depth-idx)                        Output Shape              Param #
+===============================================================================================
+ResNet                                        [128, 10]                 --
+├─Conv1: 1-1                                  [128, 16, 32, 32]         --
+│    └─Conv2d: 2-1                            [128, 16, 32, 32]         448
+│    └─BatchNorm2d: 2-2                       [128, 16, 32, 32]         32
+│    └─ReLU: 2-3                              [128, 16, 32, 32]         --
+├─Conv2: 1-2                                  [128, 16, 32, 32]         --
+│    └─Sequential: 2-4                        [128, 16, 32, 32]         --
+│    │    └─PlainBlock: 3-1                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-2                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-3                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-4                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-5                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-6                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-7                   [128, 16, 32, 32]         4,704
+├─Conv3: 1-3                                  [128, 32, 16, 16]         --
+│    └─Sequential: 2-5                        [128, 32, 16, 16]         --
+│    │    └─PlainBlock: 3-8                   [128, 32, 16, 16]         14,016
+│    │    └─PlainBlock: 3-9                   [128, 32, 16, 16]         18,624
+│    │    └─PlainBlock: 3-10                  [128, 32, 16, 16]         18,624
+│    │    └─PlainBlock: 3-11                  [128, 32, 16, 16]         18,624
+│    │    └─PlainBlock: 3-12                  [128, 32, 16, 16]         18,624
+│    │    └─PlainBlock: 3-13                  [128, 32, 16, 16]         18,624
+│    │    └─PlainBlock: 3-14                  [128, 32, 16, 16]         18,624
+├─Conv4: 1-4                                  [128, 64, 8, 8]           --
+│    └─Sequential: 2-6                        [128, 64, 8, 8]           --
+│    │    └─PlainBlock: 3-15                  [128, 64, 8, 8]           55,680
+│    │    └─PlainBlock: 3-16                  [128, 64, 8, 8]           74,112
+│    │    └─PlainBlock: 3-17                  [128, 64, 8, 8]           74,112
+│    │    └─PlainBlock: 3-18                  [128, 64, 8, 8]           74,112
+│    │    └─PlainBlock: 3-19                  [128, 64, 8, 8]           74,112
+│    │    └─PlainBlock: 3-20                  [128, 64, 8, 8]           74,112
+│    │    └─PlainBlock: 3-21                  [128, 64, 8, 8]           74,112
+├─FC: 1-5                                     [128, 10]                 --
+│    └─AdaptiveAvgPool2d: 2-7                 [128, 64, 1, 1]           --
+│    └─Linear: 2-8                            [128, 10]                 650
+===============================================================================================
+Total params: 660,170
+Trainable params: 660,170
+Non-trainable params: 0
+Total mult-adds (G): 12.49
+===============================================================================================
+Input size (MB): 1.57
+Forward/backward pass size (MB): 855.65
+Params size (MB): 2.64
+Estimated Total Size (MB): 859.86
+===============================================================================================
+```
+
+</details>
+
+
+
+
+
+<details>
+<summary>PlainNet-56</summary>
+
+```
+===============================================================================================
+Layer (type:depth-idx)                        Output Shape              Param #
+===============================================================================================
+ResNet                                        [128, 10]                 --
+├─Conv1: 1-1                                  [128, 16, 32, 32]         --
+│    └─Conv2d: 2-1                            [128, 16, 32, 32]         448
+│    └─BatchNorm2d: 2-2                       [128, 16, 32, 32]         32
+│    └─ReLU: 2-3                              [128, 16, 32, 32]         --
+├─Conv2: 1-2                                  [128, 16, 32, 32]         --
+│    └─Sequential: 2-4                        [128, 16, 32, 32]         --
+│    │    └─PlainBlock: 3-1                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-2                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-3                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-4                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-5                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-6                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-7                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-8                   [128, 16, 32, 32]         4,704
+│    │    └─PlainBlock: 3-9                   [128, 16, 32, 32]         4,704
+├─Conv3: 1-3                                  [128, 32, 16, 16]         --
+│    └─Sequential: 2-5                        [128, 32, 16, 16]         --
+│    │    └─PlainBlock: 3-10                  [128, 32, 16, 16]         14,016
+│    │    └─PlainBlock: 3-11                  [128, 32, 16, 16]         18,624
+│    │    └─PlainBlock: 3-12                  [128, 32, 16, 16]         18,624
+│    │    └─PlainBlock: 3-13                  [128, 32, 16, 16]         18,624
+│    │    └─PlainBlock: 3-14                  [128, 32, 16, 16]         18,624
+│    │    └─PlainBlock: 3-15                  [128, 32, 16, 16]         18,624
+│    │    └─PlainBlock: 3-16                  [128, 32, 16, 16]         18,624
+│    │    └─PlainBlock: 3-17                  [128, 32, 16, 16]         18,624
+│    │    └─PlainBlock: 3-18                  [128, 32, 16, 16]         18,624
+├─Conv4: 1-4                                  [128, 64, 8, 8]           --
+│    └─Sequential: 2-6                        [128, 64, 8, 8]           --
+│    │    └─PlainBlock: 3-19                  [128, 64, 8, 8]           55,680
+│    │    └─PlainBlock: 3-20                  [128, 64, 8, 8]           74,112
+│    │    └─PlainBlock: 3-21                  [128, 64, 8, 8]           74,112
+│    │    └─PlainBlock: 3-22                  [128, 64, 8, 8]           74,112
+│    │    └─PlainBlock: 3-23                  [128, 64, 8, 8]           74,112
+│    │    └─PlainBlock: 3-24                  [128, 64, 8, 8]           74,112
+│    │    └─PlainBlock: 3-25                  [128, 64, 8, 8]           74,112
+│    │    └─PlainBlock: 3-26                  [128, 64, 8, 8]           74,112
+│    │    └─PlainBlock: 3-27                  [128, 64, 8, 8]           74,112
+├─FC: 1-5                                     [128, 10]                 --
+│    └─AdaptiveAvgPool2d: 2-7                 [128, 64, 1, 1]           --
+│    └─Linear: 2-8                            [128, 10]                 650
+===============================================================================================
+Total params: 855,050
+Trainable params: 855,050
+Non-trainable params: 0
+Total mult-adds (G): 16.13
+===============================================================================================
+Input size (MB): 1.57
+Forward/backward pass size (MB): 1090.53
+Params size (MB): 3.42
+Estimated Total Size (MB): 1095.52
+===============================================================================================
+```
+
+</details>
+
+
+---
+
+## Solved the Degradation Problem
+As the depth of the model increases, the error decreases
+- Degradation Problem: Deeper models have higher errors
+#### Paper's Figure 6
+
+<img src="assets/1-figure_6.png">
+
+#### Implemented Models
 
 <img src="assets/2-plain_resnet.png">
+* Use grad clip for plainnet 56
 
-- 실험 조건
-    
-    Plain Net의 parameter 개수와 동일하게 고정하기 위해 ResNet의 Shortcut을 Option A 방식 사용
-    
-    - Option A: identity mapping만 사용해 동일한 복잡도 유지
+---
+## Reproduced the Paper's Performance
+|   |  Paper's CIPHAR10<br> Top1-error[%] | Checkpoint's CIPHAR10<br> Top1-error[%] |
+| :------------: | :--------------: | :--------------: |
+ResNet-20| 8.75 | 9.18 |
+ResNet-32| 7.51 | 8.68 |
+ResNet-44| 7.17 | 8.13 |
+ResNet-56| 6.97 | 7.10 |
+ResNet-110| 6.43 | 6.95 |
 
-#### Plain Net을 깊어질수록 Degradation 문제 발생(왼쪽)
+---
 
-깊은 네트워크일수록 높은 error 갖음(점선: train error, 실선: valid error)
+## To get started
+```shell
+pip install -r requirements.txt
+```
+### How to Train
+```shell
+python train.py  --model_name resnet20  --mapping A
+```
 
-<img src="assets/3-plain.png">
-
-#### ResNet은 깊어져도 Degradation 문제가 발생하지 않음(오른쪽)
-
-깊은 네트워크일수록 낮은 error 갖음(점선: train error, 실선: valid error)
-
-<img src="assets/4-resnet.png">
-
-***
-
-## Experiment 2.
-
-논문에서 일반적으로 사용하는 `Normalize` 대신 `Per-pixel mean subtraction`을 사용해 성능 차이를 비교해보고자 진행
-
-`Per-pixel mean subtraction` vs `Per-pixel mean subtraction & normalization` vs `Per-pixel mean subtraction & normalization & Whitening`비교
-
-<img src="assets/5-total.png">
-
-### 1. Per-pixel mean subtraction
-
-`Zero-centering`
-
-- train/valid 모두 train 이미지 45,000장의 픽셀 별 평균 값을 뺀 전처리 적용
-
-### 2. Per-pixel mean subtraction & Normalization
-
-`Zero-centering & Normalization`
-
-- train/valid 모두 train 이미지 45,000장의 픽셀 별 평균 값을 빼고, 255로 나누는 전처리 적용
-
-### 3. Per-pixel mean subtraction & Normalization & Whitening
-
-`Zero-centering & Normalization & Decorrelation`
-
-- train/valid 모두 train 이미지 45,000장의 픽셀 별 평균 값을 빼고, 255로 나누고, train 이미지들로 구한 covariance matrix의 eigenvector를 사용해 이미지 사이의 correlation을 제거하는 전처리 적용
-
-[****Preprocessing for deep learning: from covariance matrix to image whitening****](https://www.notion.so/Preprocessing-for-deep-learning-from-covariance-matrix-to-image-whitening-25a2419afaaf4e03adfa76c890b7deab)
-
-***
-
-## Experiment Settings
-
-논문에서 CIFAR-10의 조건과 최대한 동일하게 구성
-
-#### Training
-
-- Precrocessing: Per-pixel mean subtraction
-- weight decay = 0.9, momentum = 0.0001, He initialization, Batch Norm 사용
-- dropout 미사용
-- 논문의 Batch size = 128로 GPU 2 대 사용 ⇒ Batch size = 128로 각각 backward 연산 진행으로 변형헤 적용
-- learning rate == 0.1에서 시작
-    - iter == 32,000k와 iter == 48,000k에서 각각 learning rate을 10으로 나눔
-    - iter == 64,000k에서 종료
-- 45k/5k = train/valid split 사용
-- Simple data augmentation 사용
-    - 이미지의 모든 면에 4 pixel padding
-    - HorizontalFlip
-    - 32x32로 RandomCrop
-
-#### Testing
-
-- 원본 32x32 이미지 그대로 사용
-
-***
-
-## Issues
-
-### 1. ResNet의 valid loss가 증가하는 구간 존재
-
-32,000 iter에서 learning rate을 10으로 나눈 이후, valid loss가 증가
-
-- Plain net에서는 증가하지 않았음
-- 오버피팅으로 예상되지만, 실험 조건으로 dropout은 사용하지 않아 L2 Normalization은 시도하지 못했고, 논문에서 ImageNet 실험시 사용한 FancyPCA를 적용해봤다.
-    - FancyPCA: altering the intensities of the RGB channels
-        - RGB 픽셀에 PCA 적용
-            - 이미지에 `주성분 x 고유값 x N(0,0.1)에서 추출한 임의의 값` 더해줌
-            - 즉, $I_{xy} + [\mathrm{\textbf{P}_1},\mathrm{\textbf{P}_2},\mathrm{\textbf{P}_3}] [\alpha_1\lambda_1, \alpha_2\lambda_2, \alpha_3\lambda_3]^T$
-                - $I_{xy} = [I^R_P{xy},I^G_P{xy},I^B_P{xy}]^T$
-                - $\mathrm{\textbf{P}_i}$: RGB 픽셀의 3x3 covariance 행렬의 i번째 고유벡터
-                - $\lambda_i$: RGB 픽셀의 3x3 covariance 행렬의 i번째 고유값
-                - $\alpha _i$: 하나의 이미지가 사용될 때마다 한번만 픽셀별로 추출
-                - intensity와 color에 관련 없이, 이미지의 중요한 특징을 보존
-        
-        [](https://dl.acm.org/doi/abs/10.1145/3065386)
-        
-    - Augmentation 적용시 어느 정도는 완화되었다.
-    
-    <img src="assets/6-FancyPCA.png">
-    
-
-### 2. Whitening을 적용한 경우 성능이 Per-pixel Subtraction만 적용한 경우보다 높은 성능을 갖는 현상의 이유
-
-- Kaiming He의 Issue에서 AlexNet에서 사용해서 그대로 사용했고, per-channel mean을 사용해도 큰 차이 없다고 함
-    
-    [https://github.com/KaimingHe/deep-residual-networks/issues/5](https://github.com/KaimingHe/deep-residual-networks/issues/5)
-
-## References
-[Deep Residual Learning for Image Recognition](https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf)
+### How to Test
+```shell
+python test.py  --model_dir ./trained_models/resnet20_A_230622_192331
+```
