@@ -249,8 +249,8 @@ def train(args, model, criterion, optimizer, train_loader, valid_loader):
                 }
             )
 
-            # if done:
-            #     break
+            if done:
+                break
 
 def validation(args, epoch, model, criterion, valid_loader):
     # val loop
