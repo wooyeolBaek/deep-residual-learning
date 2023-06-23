@@ -589,7 +589,7 @@ As the depth of the model increases, the error decreases
 
 ---
 ## Reproduced the Paper's Performance
-|   |  Paper's CIPHAR10<br> Top1-error[%] | Checkpoint's CIPHAR10<br> Top1-error[%] |
+|   |  Paper's CIPHAR10<br> Top1-error[%] | Reproduced's CIPHAR10<br> Top1-error[%] |
 | :------------: | :--------------: | :--------------: |
 ResNet-20| 8.75 | 9.18 |
 ResNet-32| 7.51 | 8.68 |
