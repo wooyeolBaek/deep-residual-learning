@@ -22,7 +22,8 @@ ResNet-110| 6.43 | 6.95 |
     - HorizontalFlip
     - 32x32 RandomCrop
 - batch size: 128
-- learning rate: 1e-1(divide by 10 at 34,000k and 48,000k, total = 64,000k)
+- learning rate: 1e-1(divide by 10 at 34,000k and 48,000k)
+- iters: 64,000k
 - weight decay: 9e-1
 - momentum: 1e-4
 - etc: He initialization, Batch norm, no Dropout
