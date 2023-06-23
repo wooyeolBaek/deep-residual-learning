@@ -612,3 +612,8 @@ python train.py  --model_name resnet20  --mapping A
 ```shell
 python test.py  --model_dir ./trained_models/resnet20_A_230622_192331
 ```
+
+
+## References
+[Deep residual learning for image recognition](https://arxiv.org/pdf/1512.03385.pdf)
+[Delving deep into rectifiers: Surpassing human-level performance on imagenet classification](https://arxiv.org/pdf/1502.01852.pdf)
