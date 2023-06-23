@@ -2,9 +2,8 @@ import os
 import sys
 sys.path.append(os.getcwd())
 
-import torch
 import torch.nn as nn
-import torch.nn.functional as F
+
 from importlib import import_module
 
 
@@ -357,21 +356,7 @@ class ResNet(nn.Module):
         return z
 
 if __name__=="__main__":
-    batch_size = 16
-    x = torch.randn((batch_size,3,32,32))
-    print("input shape:", x.shape)
+    from torchinfo import summary
 
-    # model test
-    for model_num in architectures.keys():
-        model_name = "resnet" + str(model_num)
-        
-        print(model_name, "Test", end=' : ')
-        
-        model = locals()[model_name](num_classes=10, mapping='B', block_name="ResBlock")
-        out = model(x)
-
-        if list(out.shape) != [16,10]:
-            print(model_name, out.shape, end=' : ')
-            print(f'Output type: {type(out)}')
-        else:
-            print("passed")
+    model = resnet20(num_classes=10, mapping='A', block_name="ResBlock")
+    summary(model, input_size=(128, 3, 32, 32))

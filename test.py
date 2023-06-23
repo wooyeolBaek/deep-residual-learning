@@ -36,11 +36,16 @@ def parse_args():
     parser.add_argument('--include_valid', type=bool, default=True)
 
     # --model vars
-    parser.add_argument('--model_dir', type=str, default='./trained_models/resnet20_A_230622_192331')
+    parser.add_argument('--model', type=str, default='resnet', help='resnet, plain, vgg') # 이제 안바꿔도 됨
+    # parser.add_argument('--model_dir', type=str, default='./trained_models/resnet20_A_230622_192331')
     # parser.add_argument('--model_dir', type=str, default='./trained_models/resnet32_A_230622_192327')
     # parser.add_argument('--model_dir', type=str, default='./trained_models/resnet44_A_230622_192323')
     # parser.add_argument('--model_dir', type=str, default='./trained_models/resnet56_A_230622_192321')
     # parser.add_argument('--model_dir', type=str, default='./trained_models/resnet110_A_230622_192317')
+    # parser.add_argument('--model_dir', type=str, default='./trained_models/plainnet20_A_230623_001026')
+    # parser.add_argument('--model_dir', type=str, default='./trained_models/plainnet32_A_230623_001020')
+    # parser.add_argument('--model_dir', type=str, default='./trained_models/plainnet44_A_230623_001008')
+    parser.add_argument('--model_dir', type=str, default='./trained_models/plainnet56_A_230623_000836')
 
     # --etc
     parser.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")

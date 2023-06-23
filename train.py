@@ -26,7 +26,6 @@ warnings.filterwarnings(action='ignore')
 def parse_args():
     parser = ArgumentParser()
     
-    # python train.py --model_name resnet110 --normalization True --include_valid True --mapping A
     # --optimizer vars
     parser.add_argument('--seed', type=int, default=2023)
     parser.add_argument('--epochs', type=int, default=164)
@@ -56,8 +55,8 @@ def parse_args():
     parser.add_argument('--model_name', type=str, default='resnet18', help='resnet18, plain18, ...')
     parser.add_argument('--save_model', type=bool, default=True)
 
-    # --gradient_clipping
-    parser.add_argument("--gradient_clipping", type=bool, default=False)
+    # --grad_clip
+    parser.add_argument("--grad_clip", type=bool, default=False)
 
     # --etc
     parser.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
@@ -73,7 +72,6 @@ def parse_args():
 
     args.epochs = (args.max_iter * args.train_batch_size) // 45_000 + 1
 
-    args.model = 'models.'+args.model
     if args.model_name == 'resnet110':
         args.learning_rate = 1e-2
 
@@ -164,21 +162,16 @@ def train(args, model, criterion, optimizer, train_loader, valid_loader):
                     pbar.set_description(f"[Train] Epoch [{epoch+1}/{args.epochs}]")
 
                     train_iteration += 1
-                    # inputs1 = inputs[:args.train_batch_size//2].type(torch.float32).to(args.device)
-                    # inputs2 = inputs[args.train_batch_size//2:].type(torch.float32).to(args.device)
                     inputs = inputs.type(torch.float32).to(args.device)
                     labels = labels.to(args.device)
 
                     with torch.cuda.amp.autocast():
                         outputs = model(inputs)
-                        # outputs1 = model(inputs1)
-                        # outputs2 = model(inputs2)
-                        # outputs = torch.cat([outputs1, outputs2], dim=0)
                         loss = criterion(outputs, labels)
 
                     scaler.scale(loss).backward()
-                    # gradient clipping
-                    if args.gradient_clipping:
+                    # grad clip
+                    if args.grad_clip:
                         scaler.unscale_(optimizer)
                         torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=0.1)
                     scaler.step(optimizer)
@@ -364,7 +357,7 @@ if __name__ == '__main__':
         num_workers=1
     )
 
-    model_module = getattr(import_module(args.model), args.model_name)
+    model_module = getattr(import_module('models.resnet'), args.model_name)
     model = model_module(
         num_classes=10,
         mapping=args.mapping,
