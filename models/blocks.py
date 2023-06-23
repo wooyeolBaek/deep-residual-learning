@@ -23,36 +23,42 @@ class ConvBN(nn.Module):
 
 
 class PlainBlock(nn.Module):
-    def __init__(self, in_channels, out_channels):
+    def __init__(self, in_channels, out_channels, kernel_size=3, stride=1, padding=1, **kwargs):
         super().__init__()
 
         self.f = nn.Sequential(
-            ConvBN(
+            nn.Conv2d(
                 in_channels=in_channels,
                 out_channels=out_channels,
-                kernel_size=3,
+                kernel_size=kernel_size,
                 stride=1 if in_channels==out_channels else 2, # 2 for downsampling
-                padding=1,
+                padding=padding,
+            ),
+            nn.BatchNorm2d(
+                num_features=out_channels,
             ),
             nn.ReLU(),
-            ConvBN(
+            nn.Conv2d(
                 in_channels=out_channels,
                 out_channels=out_channels,
-                kernel_size=3,
+                kernel_size=kernel_size,
                 stride=1,
-                padding=1,
+                padding=padding,
+            ),
+            nn.BatchNorm2d(
+                num_features=out_channels,
             ),
         )
         self.relu = nn.ReLU()
 
     def forward(self, x):
-        x = self.f(x)
-        x = self.relu(x)
+        z = self.f(x)
+        z = self.relu(z)
 
-        return x
+        return z
 
 
-class IdentityMap(nn.Module):
+class ZeroPadMap(nn.Module):
     def __init__(self, in_channels, out_channels):
         super().__init__()
         # identity mapping: in_channels==out_channels
@@ -88,12 +94,17 @@ class IdentityMap(nn.Module):
 class ProjectionMap(nn.Module):
     def __init__(self, in_channels, out_channels, stride=2):
         super().__init__()
-
-        self.shortcut = nn.Conv2d(
-            in_channels=in_channels,
-            out_channels=out_channels,
-            kernel_size=1,
-            stride=stride,
+        
+        self.shortcut = nn.Sequential(
+            nn.Conv2d(
+                in_channels=in_channels,
+                out_channels=out_channels,
+                kernel_size=1,
+                stride=stride,
+            ),
+            nn.BatchNorm2d(
+                num_features=out_channels,
+            ),
         )
     
     def forward(self, x):
@@ -102,11 +113,11 @@ class ProjectionMap(nn.Module):
 
 
 class ResBlock(PlainBlock):
-    def __init__(self, in_channels, out_channels, mapping='A'):
+    def __init__(self, in_channels, out_channels, mapping='B'):
         super().__init__(in_channels, out_channels)
         
         # option A: Identity Mapping with Zero Padding
-        self.shortcut = IdentityMap(
+        self.shortcut = ZeroPadMap(
             in_channels=in_channels,
             out_channels=out_channels,
         )
@@ -128,33 +139,39 @@ class ResBlock(PlainBlock):
 
 
 class BottleneckBlock(ResBlock):
-    def __init__(self, in_channels, out_channels, mapping='A'):
+    def __init__(self, in_channels, out_channels, mapping='B'):
         super().__init__(in_channels, out_channels, mapping)
 
         self.f = nn.Sequential(
-            ConvBN(
+            nn.Conv2d(
                 in_channels=in_channels,
                 out_channels=out_channels,
                 kernel_size=1,
-                stride=1,
+                stride=1 if in_channels==out_channels else 2, # 2 for downsampling
                 padding=0,
             ),
+            nn.BatchNorm2d(
+                num_features=out_channels,
+            ),
             nn.ReLU(),
-            ConvBN(
+            nn.Conv2d(
                 in_channels=out_channels,
                 out_channels=out_channels,
                 kernel_size=3,
-                stride=1 if in_channels==out_channels else 2, # 2 for downsampling
+                stride=1,
                 padding=1,
             ),
+            nn.BatchNorm2d(
+                num_features=out_channels,
+            ),
             nn.ReLU(),
-            ConvBN(
+            nn.Conv2d(
                 in_channels=out_channels,
                 out_channels=out_channels,
                 kernel_size=1,
                 stride=1,
                 padding=0,
-            ),
+            )
         )
 
 

@@ -22,8 +22,71 @@ class CustomCIFAR10(Dataset):
 
     def __len__(self):
         return len(self.X)
+    
 
-def preprocess(per_pixel_mean_sub=True, whitening=False, normalization=False, epsilon=0.1, include_valid=True):
+def get_test_dataset(normalization=True, per_pixel_mean_sub=True):
+    print("Start Preprocessing...")
+    train_dataset = CIFAR10(
+        root="./data/CIFAR10/",
+        train=True,
+        download=True
+    )
+    X = []
+    Y = []
+    for i in tqdm(range(len(train_dataset))):
+        X.append(np.array(train_dataset[i][0]))
+        Y.append(train_dataset[i][1])
+
+    test_X = np.array(X)
+    test_Y = np.array(Y)
+    
+    train_X, _, _, _ = train_test_split(X, Y, test_size=0.1, random_state=2023, stratify=Y)
+    
+    train_X = np.array(train_X)
+
+    train_batch_size, train_height, train_width, train_nchannels = train_X.shape
+    train_X = train_X.reshape(train_batch_size, train_height * train_width * train_nchannels)
+
+    if normalization:
+        train_X = train_X / 255.
+
+    if per_pixel_mean_sub:
+        train_mean = train_X.mean(axis=0)
+        train_X = train_X - train_mean
+
+    ########################################
+    test_dataset = CIFAR10(
+        root="./data/CIFAR10/",
+        train=False,
+        download=True
+    )
+    X = []
+    Y = []
+    for i in tqdm(range(len(test_dataset))):
+        X.append(np.array(test_dataset[i][0]))
+        Y.append(test_dataset[i][1])
+
+    test_X = np.array(X)
+    test_Y = np.array(Y)
+
+    test_batch_size, test_height, test_width, test_nchannels = test_X.shape
+    test_X = test_X.reshape(test_batch_size, test_height * test_width * test_nchannels)
+
+    if normalization:
+        test_X = test_X / 255.0
+
+    if per_pixel_mean_sub:
+        test_X = test_X - train_mean
+    
+    if not normalization:
+        test_X = test_X.astype(np.uint8)
+
+    test_X = test_X.reshape(test_batch_size, test_height, test_width, test_nchannels)
+
+    return test_X, test_Y
+
+
+def preprocess(per_pixel_mean_sub=True, whitening=False, normalization=False, per_pixel_std_div=False, epsilon=0.1, include_valid=True):
     print("Start Preprocessing...")
     train_dataset = CIFAR10(
         root="./data/CIFAR10/",
@@ -56,8 +119,15 @@ def preprocess(per_pixel_mean_sub=True, whitening=False, normalization=False, ep
     if per_pixel_mean_sub:
         train_mean = train_X.mean(axis=0)
         train_X = train_X - train_mean
+
+        if per_pixel_std_div:
+            train_std = train_X.std(axis=0)
+            train_X = train_X / (train_std + epsilon)
+        
         if include_valid:
             valid_X = valid_X - train_mean
+            if per_pixel_std_div:
+                valid_X = valid_X / (train_std + epsilon)
 
     if not normalization:
         train_X = train_X.astype(np.uint8)
