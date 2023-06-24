@@ -8,5 +8,5 @@ __pycache__
 **copy**
 **.jpeg
 venv
-plain_feature_map
-resnet_feature_map
+plain_feature_maps
+resnet_feature_maps

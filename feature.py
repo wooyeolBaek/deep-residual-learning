@@ -154,6 +154,7 @@ if __name__ == '__main__':
         for j, feature in enumerate(feature_map):
             axes[j//ncol, j%ncol].imshow(feature, cmap='gray')
         
+
         if name.endswith('shortcut.shortcut'):
             name = '_'.join(name.split('.')[2:4]) + '_ZeroPadMap'
         elif name.endswith('shortcut'):
@@ -162,5 +163,9 @@ if __name__ == '__main__':
             name = '_'.join(name.split('.')[2:4]) + '_3x3ConvBnReLU'
         else:
             name = name.split('.')[1]
+        
+        # fig 제목 설정
+        model_name = args.model_dir.split('/')[-1].split('_')[0]
+        fig.suptitle(model_name +'_' + name, fontsize=16)
 
         plt.savefig(os.path.join(dir,f'{name}.png'))
