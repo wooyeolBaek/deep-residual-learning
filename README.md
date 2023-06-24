@@ -16,11 +16,12 @@
     1. `ResNet Implementation`
     2. `Solving the Degradation Problem`
     3. `Reproducing the Paper's Performance`
+    4. Check `3x3Conv + BatchNorm + ReLU + 3x3Conv + BatchNorm` optimized to zero
 
 
 ---
 
-## Implementation
+## 1. Implementation
 Use Zero-pad for Identity mapping(option A.) to match #params of ResNet and PlainNet
 
 <details>
@@ -576,7 +577,7 @@ Estimated Total Size (MB): 1095.52
 
 ---
 
-## Solved the Degradation Problem
+## 2. Solved the Degradation Problem
 As the depth of the model increases, the error decreases
 - Degradation Problem: Deeper models have higher errors
 #### Paper's Figure 6
@@ -589,7 +590,7 @@ As the depth of the model increases, the error decreases
 * Use grad clip for plainnet 56
 
 ---
-## Reproduced the Paper's Performance
+## 3. Reproduced the Paper's Performance
 |   |  Paper's CIPHAR10<br> Top1-error[%] | Reproduced's CIPHAR10<br> Top1-error[%] |
 | :------------: | :--------------: | :--------------: |
 ResNet-20| 8.75 | 9.18 |
@@ -598,6 +599,9 @@ ResNet-44| 7.17 | 8.13 |
 ResNet-56| 6.97 | 7.10 |
 ResNet-110| 6.43 | 6.95 |
 
+
+## 4. Check `3x3Conv + BatchNorm + ReLU + 3x3Conv + BatchNorm` optimized to zero
+#### Input Feature Map of 1st 32x32 Layer
 ---
 
 ## To get started

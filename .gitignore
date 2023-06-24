@@ -7,3 +7,6 @@ __pycache__
 .DS**
 **copy**
 **.jpeg
+venv
+plain_feature_map
+resnet_feature_map

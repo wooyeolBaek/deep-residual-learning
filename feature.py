@@ -5,7 +5,6 @@ from tqdm import tqdm
 
 import torch
 import numpy as np
-from torch.utils.data import DataLoader
 
 from argparse import ArgumentParser
 from importlib import import_module
@@ -15,7 +14,6 @@ from albumentations.pytorch import ToTensorV2
 
 import matplotlib.pyplot as plt
 from torchvision.datasets import CIFAR10
-from dataset import CustomCIFAR10, get_test_dataset
 
 import warnings
 warnings.filterwarnings(action='ignore')
@@ -35,12 +33,13 @@ def parse_args():
     parser.add_argument('--include_valid', type=bool, default=True)
 
     # --model vars
-    parser.add_argument('--model_dir', type=str, default='./trained_models/resnet20_A_230622_192331')
+    # parser.add_argument('--model_dir', type=str, default='./trained_models/resnet20_A_230622_192331')
     # parser.add_argument('--model_dir', type=str, default='./trained_models/resnet32_A_230622_192327')
     # parser.add_argument('--model_dir', type=str, default='./trained_models/resnet44_A_230622_192323')
     # parser.add_argument('--model_dir', type=str, default='./trained_models/resnet56_A_230622_192321')
     # parser.add_argument('--model_dir', type=str, default='./trained_models/resnet110_A_230622_192317')
-    # parser.add_argument('--model_dir', type=str, default='./trained_models/plainnet20_A_230623_001026')
+
+    parser.add_argument('--model_dir', type=str, default='./trained_models/plainnet20_A_230623_001026')
     # parser.add_argument('--model_dir', type=str, default='./trained_models/plainnet32_A_230623_001020')
     # parser.add_argument('--model_dir', type=str, default='./trained_models/plainnet44_A_230623_001008')
     # parser.add_argument('--model_dir', type=str, default='./trained_models/plainnet56_A_230623_000836')
@@ -64,19 +63,7 @@ def seed_everything(seed):
 
 
 def get_feature_maps(model, image):
-    if not os.path.exists('./feature_maps'):
-        os.makedirs('./feature_maps')
-
-    
-    image = np.array(image).astype(np.float32)
-    preprocess = A.Compose([
-        ToTensorV2()
-    ])
-
-    # 입력 이미지 전처리
-    preprocessed_image = preprocess(image=image)['image']
-    plt.imsave('./feature_maps/input_image.png', image.astype(np.uint8))
-    preprocessed_image = preprocessed_image.unsqueeze(0)
+    image = image.unsqueeze(0)
     # image save
     # print('shape!!!',preprocessed_image.shape)
 
@@ -104,7 +91,7 @@ def get_feature_maps(model, image):
     # 모델에 입력 이미지 전달하여 특성 맵 추출
     model.eval()
     with torch.no_grad():
-        _ = model(preprocessed_image)
+        _ = model(image)
 
     # 등록한 hook 제거
     for hook in hooks:
@@ -133,15 +120,29 @@ if __name__ == '__main__':
     model = model.to(args.device)
     model = torch.nn.DataParallel(model)
     
-    cifar10 = CIFAR10(root='data/', download=True, train=False)
-    # image = cifar10.data[0]
-    image, label = cifar10[1]
-    feature_maps, hook_names = get_feature_maps(model, image)
-    
-    
 
+    # makedirs feature map folder
+    if 'resnet' in args.model_dir:
+        dir = './resnet_feature_maps'
+    else:
+        dir = './plain_feature_maps'
     
+    if not os.path.exists(dir):
+        os.makedirs(dir)
     
+    cifar10 = CIFAR10(root='data/', download=True, train=False)
+    image, label = cifar10[1]
+    image = np.array(image).astype(np.float32)
+    plt.imsave(os.path.join(dir, 'input_image.png'), image.astype(np.uint8))
+    preprocess = A.Compose([
+        A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ToTensorV2(),
+    ])
+
+    # 입력 이미지 전처리
+    preprocessed_image = preprocess(image=image)['image']
+    feature_maps, hook_names = get_feature_maps(model, preprocessed_image)
+
     # feature map 개수
     print(f"Total feature maps: {len(feature_maps)}")
     for i, (name, feature_map) in tqdm(enumerate(zip(hook_names, feature_maps)), total=len(feature_maps)):
@@ -162,4 +163,4 @@ if __name__ == '__main__':
         else:
             name = name.split('.')[1]
 
-        plt.savefig(f'./feature_maps/{name}.png')
+        plt.savefig(os.path.join(dir,f'{name}.png'))
