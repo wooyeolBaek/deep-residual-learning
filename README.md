@@ -16,7 +16,7 @@
     1. `ResNet Implementation`
     2. `Solving the Degradation Problem`
     3. `Reproducing the Paper's Performance`
-    4. Check if 3x3Conv + BatchNorm + ReLU + 3x3Conv + BatchNorm are optimized to zero
+    4. Check if `3x3Conv + BatchNorm + ReLU + 3x3Conv + BatchNorm + Identity + ReLU` are optimized to identity
 
 
 ---
@@ -600,7 +600,7 @@ ResNet-56| 6.97 | 7.10 |
 ResNet-110| 6.43 | 6.95 |
 
 
-## 4. Check if `3x3Conv + BatchNorm + ReLU + 3x3Conv + BatchNorm` are optimized to zero
+## 4. Check if `3x3Conv + BatchNorm + ReLU + 3x3Conv + BatchNorm + Identity + ReLU` are optimized to identity
 
 ### Input Image(Upscaled from 32x32 to 128x128)
 <img src="assets/input_image_upscaled.png">
