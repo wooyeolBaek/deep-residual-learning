@@ -605,7 +605,7 @@ ResNet-110| 6.43 | 6.95 |
 ### Input Image(Upscaled from 32x32 to 128x128)
 <img src="assets/input_image_upscaled.png">
 
-### `PlainNet: 32x32 Conv's Output Feature Map` vs `ResNet: 32x32 Conv's Output Feature Map`
+##### `PlainNet: 32x32 Conv's Output Feature Map` vs `ResNet: 32x32 Conv's Output Feature Map`
 <img src="assets/feature_map.png">
 
 - PlainNet's output was optimized to unkown tensor(dramatic changes)
