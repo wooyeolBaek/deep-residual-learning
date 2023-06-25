@@ -22,7 +22,7 @@
 ---
 
 ## 1. Implementation
-Use Zero-pad for Identity mapping(option A.) to match #params of ResNet and PlainNet
+Use Zero-pad for Identity mapping(option A.) to match Param # of ResNet and PlainNet
 
 <details>
 <summary>ResNet-20</summary>
@@ -602,7 +602,7 @@ ResNet-110| 6.43 | 6.95 |
 
 ## 4. Check if `3x3Conv + BatchNorm + ReLU + 3x3Conv + BatchNorm + Identity + ReLU` are optimized to identity
 
-### Input Image(Upscaled from 32x32 to 128x128)
+### Input Image
 <img src="assets/input_image_upscaled.png">
 
 #### `PlainNet: 32x32 Conv's Output Feature Map` vs `ResNet: 32x32 Conv's Output Feature Map`
